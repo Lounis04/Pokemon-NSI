@@ -33,7 +33,7 @@ class lancement():
    #Méthode qui permet de lancer le combat #
 
     def lancement_combat(self):
-        rounds = 0
+        rounds = 1
         print("combat lancé")
         mode = self.choix_mode_jeu()
         if mode == 0:
@@ -52,7 +52,28 @@ class lancement():
                 print(f"{premier.nom} a été vaincu!")
                 break
              rounds += 1
-
+        if mode == 1:
+           joueur = self.choix_pokemon_bot()
+           while self.pokemon1.PV > 0 or self.pokemon2.PV > 0:
+             premier = self.joue_en_premier()
+             second = self.joue_en_second(premier)
+             print(f">>>>>>>>>>>>> début du round {rounds}, {premier.nom} commence >>>>>>>>>>>>")
+             if premier == joueur:
+               premier.afficher_menu()
+               premier.degats(second)
+               second.degats_bot(premier)
+               if second.PV <= 0:
+                print(f"{second.nom} a été vaincu !")
+                break
+             if second == joueur:
+              premier.degats_bot(second)
+              second.afficher_menu()
+              second.degats(premier)
+              if premier.PV <= 0:
+               print(f"{premier.nom} a été vaincu !")
+               break
+             rounds += 1
+                 
    #Méthode qui demande le choix du mode de jeu : contre un joueur ou un bot#
 
     def choix_mode_jeu(self):
@@ -65,11 +86,13 @@ class lancement():
    #Méthode qui demande au joueur quel pokemon il veut jouer s'il souhaite jouer contre un bot#           
 
     def choix_pokemon_bot(self):
-        res = input("lequel des 2 pokemons voulez vous etre le dresseur ?: pokemon1 ou pokemon2")
-        if res == "pokemon1":
-           return res
-        if res == "pokemon2":
-           return res
+        res = input(f"lequel des 2 pokemons voulez vous etre le dresseur ?: ({self.pokemon1.nom}/{self.pokemon2.nom})\n>")
+        if res == self.pokemon1.nom:
+           print(f"vous êtes désormais le dresseur de : {self.pokemon1.nom}" )
+           return self.pokemon1
+        if res == self.pokemon2.nom:
+           print(f"vous êtes désormais le dresseur de : {self.pokemon2.nom}" )
+           return self.pokemon2
         
    #Méthode qui définit qui joue en premier grâce à la vitesse des pokemons#
 
@@ -78,13 +101,17 @@ class lancement():
           return self.pokemon1
        elif self.pokemon1.vitesse < self.pokemon2.vitesse:
           return self.pokemon2
+       else:
+         return random.choice([self.pokemon1, self.pokemon2]) #Si les deux ont la même vitesse#
+       
+   #Méthode qui définit qui joue en second par la vitesse#
        
     def joue_en_second(self,premier):
        if premier == self.pokemon1:
           return self.pokemon2
-       elif premier == self.pokemon2:
+       if premier == self.pokemon2:
           return self.pokemon1
-       
+            
 #Classe qui s'occupe des pokemons et de leurs attributs spécifiques#
         
 class pokemon():
@@ -169,6 +196,30 @@ class pokemon():
           print(f"{self.nom} a raté son attaque")
           degats = 0
        second.PV -= degats
+       if second.PV < 0:
+          second.PV = 0
+       self.liste_attaques[res - 1].pp -= 1
+       print(f"{self.nom} a infligé {degats} de dégats à {second.nom} qui est à {second.PV} PV, à son tour !")
+
+#méthode qui calcule les dégats pour le bot#
+
+    def degats_bot (self,second):
+       res = random.randint(1, len(self.liste_attaques))
+       STAB = self.calcul_stab(res)
+       Efficacite = self.efficacite_type(second,res)
+       critique = self.coup_critique()
+       miss = self.miss(res)
+       if miss == False:
+         if self.liste_attaques[res - 1].categorie == "physique":
+           degats = int(((((2.4 * self.attaque * self.liste_attaques[res - 1].puissance) /  second.defense ) / 50 ) + 2) * (STAB * Efficacite * critique * random.uniform(0.85,1))) #randon.uniform inclut les valeurs en float##int permet d'arrondir à l"entier inférieur#
+         if self.liste_attaques[res - 1].categorie == "special":
+           degats = int(((((2.4 * self.attaque_spe * self.liste_attaques[res - 1].puissance) /  second.defense_spe ) / 50 ) + 2) * (STAB * Efficacite * critique * random.uniform(0.85,1)))
+       else:
+          print(f"{self.nom} a raté son attaque")
+          degats = 0
+       second.PV -= degats
+       if second.PV < 0:
+          second.PV = 0
        self.liste_attaques[res - 1].pp -= 1
        print(f"{self.nom} a infligé {degats} de dégats à {second.nom} qui est à {second.PV} PV, à son tour !")
 

@@ -22,7 +22,6 @@ type_dic = {
     "Acier": {"Normal": 1, "Feu": 0.5, "Eau": 0.5, "Plante": 1, "Électrik": 1, "Glace": 2, "Combat": 1, "Poison": 1 ,"Sol": 1,"Vol": 1,"Psy": 1,"Insecte": 1,"Roche": 2,"Spectre": 1,"Dragon": 1,"Tenebres": 1,"Acier": 0.5},
 }
 
-
 #Classe qui s'occupe des pokemons et de leurs attributs spécifiques#
         
 class pokemon():
@@ -40,8 +39,23 @@ class pokemon():
     #méthode qui affiche le menu spécfique au pokemon qui joue #
 
     def afficher_menu(self):
-        print(f"Attaques disponibles pour {self.nom} :")
-        for i, attaque in enumerate(self.liste_attaques, 1):
+        res = None
+        while res == None:
+         res = input(f"Que voulez vous faire ?: (Attaquer/Infos/Items/Changer de pokémon)\n> ")
+         if res == "Infos":
+           print(f"Informations sur les attaques de {self.nom} : ")
+           for i, attaque in enumerate(self.liste_attaques, 1):
+            print(f">>> {attaque.nom}: Type: {attaque.type},Catégorie: {attaque.categorie},Puissance: {attaque.puissance},Précision: {attaque.precision},PP: {attaque.pp},Priorité: {attaque.priorite},Effet: {attaque.effet}")
+           continue
+         if res == "Items":
+          print("selection des items")
+          continue
+         if res =="Changer de pokémon":
+           print("Changement de pokémon")
+           continue
+         if res == "Attaquer":  
+          print(f"Attaques disponibles pour {self.nom} :")
+          for i, attaque in enumerate(self.liste_attaques, 1):
             print(f"{i}. {attaque.nom} (Puissance: {attaque.puissance}, PP: {attaque.pp})")
 
    #méthode de calcul du stab#
@@ -91,7 +105,7 @@ class pokemon():
 
     def degats(self,second):
        res = int(input())
-       if res > 4:
+       if res > 4 or res < 1:
         print("Valeur possible depassé veuillez réessayer")
         res = int(input())
        STAB = self.calcul_stab(res)
@@ -110,7 +124,7 @@ class pokemon():
        if second.PV < 0:
           second.PV = 0
        self.liste_attaques[res - 1].pp -= 1
-       print(f"{self.nom} a infligé {degats} de dégats à {second.nom} qui est à {second.PV} PV, à son tour !")
+       print(f"{self.nom} a infligé {degats} de dégats en utulisant {self.liste_attaques[res - 1].nom} sur {second.nom} qui est à {second.PV} PV, à son tour !")
 
 #méthode qui calcule les dégats pour le bot#
 
@@ -132,32 +146,13 @@ class pokemon():
        if second.PV < 0:
           second.PV = 0
        self.liste_attaques[res - 1].pp -= 1
-       print(f"{self.nom} a infligé {degats} de dégats à {second.nom} qui est à {second.PV} PV, à son tour !")
+       print(f"{self.nom} a infligé {degats} de dégats en utulisant {self.liste_attaques[res - 1].nom} sur {second.nom} qui est à {second.PV} PV, à son tour !")
 
 
 #Liste des pokémons avec leurs attributs#
 
-Salameche = pokemon(
-   nom= "Salameche",
-   type = "Feu",
-   PV = 39,
-   attaque = 52,
-   defense = 43,
-   attaque_spe = 60,
-   defense_spe = 50,
-   vitesse = 65,
-   liste_attaques = [Dic_attaques["Charge"],Dic_attaques["Griffe"],Dic_attaques["Flammeche"],Dic_attaques["Griffe acier"]])
-
-Carapuce = pokemon(
-   nom= "Carapuce",
-   type = "Eau",
-   PV = 44,
-   attaque = 48,
-   defense = 65,
-   attaque_spe = 50,
-   defense_spe = 64,
-   vitesse = 43,
-   liste_attaques =[Dic_attaques["Charge"],Dic_attaques["Pistolet à O"],Dic_attaques["Ecume"],Dic_attaques["Morsure"]])
+Salameche = pokemon(nom= "Salameche",type = "Feu",PV = 39,attaque = 52,defense = 43,attaque_spe = 60,defense_spe = 50,vitesse = 65,liste_attaques = [Dic_attaques["Charge"],Dic_attaques["Griffe"],Dic_attaques["Flammeche"],Dic_attaques["Griffe acier"]])
+Carapuce = pokemon( nom= "Carapuce",type = "Eau",PV = 44,attaque = 48,defense = 65,attaque_spe = 50,defense_spe = 64,vitesse = 43,liste_attaques =[Dic_attaques["Charge"],Dic_attaques["Pistolet à O"],Dic_attaques["Ecume"],Dic_attaques["Morsure"]])
 
 Dic_pokemons = {
    "Salameche": Salameche,

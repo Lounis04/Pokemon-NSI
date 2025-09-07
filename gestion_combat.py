@@ -12,7 +12,7 @@ class lancement():
     def lancement_combat(self):
         rounds = 1
         print("combat lancé")
-        mode = self.choix_mode_jeu()
+        mode = self.choix_mode_jeu() #0 correspond à du joueur contre joueur et 1 du joueur contre bot#
         if mode == 0:
            while self.pokemon1.PV > 0 or self.pokemon2.PV > 0:
              premier = self.joue_en_premier()
@@ -24,6 +24,7 @@ class lancement():
              if second.PV <= 0:  
                 print(f"{second.nom} a été vaincu!")
                 break
+             print(f">>>>>>>>>> Au tour de {second.nom} <<<<<<<<<<")
              second.afficher_menu() 
              second.degats(premier) 
              if premier.PV <= 0:  
@@ -40,12 +41,14 @@ class lancement():
              if premier == joueur:
                premier.afficher_menu()
                premier.degats(second)
+               print(f">>>>>>>>>> Au tour de {second.nom} <<<<<<<<<<")
                second.degats_bot(premier)
                if second.PV <= 0:
                 print(f"{second.nom} a été vaincu !")
                 break
              if second == joueur:
               premier.degats_bot(second)
+              print(f">>>>>>>>>> Au tour de {second.nom} <<<<<<<<<<")
               second.afficher_menu()
               second.degats(premier)
               if premier.PV <= 0:
@@ -90,6 +93,7 @@ class lancement():
           return self.pokemon2
        if premier == self.pokemon2:
           return self.pokemon1
+       
             
 
         

@@ -17,16 +17,17 @@ class lancement():
            while self.pokemon1.PV > 0 or self.pokemon2.PV > 0:
              premier = self.joue_en_premier()
              second = self.joue_en_second(premier)
+             self.applications_statut(premier,second)
              if rounds == 1:
               print(f" >>>>>>>>>> début du round {rounds}, {premier.nom} commence <<<<<<<<<<<")
              premier.afficher_menu()
-             premier.degats(second)
+             premier.degats(None,second)
              if second.PV <= 0:  
                 print(f"{second.nom} a été vaincu!")
                 break
              print(f">>>>>>>>>> Au tour de {second.nom} <<<<<<<<<<")
              second.afficher_menu() 
-             second.degats(premier) 
+             second.degats(None,premier) 
              if premier.PV <= 0:  
                 print(f"{premier.nom} a été vaincu!")
                 break
@@ -37,20 +38,21 @@ class lancement():
            while self.pokemon1.PV > 0 or self.pokemon2.PV > 0:
              premier = self.joue_en_premier()
              second = self.joue_en_second(premier)
+             self.applications_statut(premier,second)
              print(f">>>>>>>>>>>>> début du round {rounds}, {premier.nom} commence >>>>>>>>>>>>")
              if premier == joueur:
                premier.afficher_menu()
-               premier.degats(second)
+               premier.degats(None,second)
                print(f">>>>>>>>>> Au tour de {second.nom} <<<<<<<<<<")
-               second.degats_bot(premier)
+               second.degats(joueur,premier)
                if second.PV <= 0:
                 print(f"{second.nom} a été vaincu !")
                 break
              if second == joueur:
-              premier.degats_bot(second)
+              premier.degats(joueur,second)
               print(f">>>>>>>>>> Au tour de {second.nom} <<<<<<<<<<")
               second.afficher_menu()
-              second.degats(premier)
+              second.degats(None,premier)
               if premier.PV <= 0:
                print(f"{premier.nom} a été vaincu !")
                break
@@ -93,6 +95,26 @@ class lancement():
           return self.pokemon2
        if premier == self.pokemon2:
           return self.pokemon1
+       
+   #Méthode qui applique les effets des status#
+
+    def applications_statut(self,premier,second):
+       if premier.effet == "burn":
+          premier.PV -= (premier.PV // 8)
+          print(f"{premier.nom} subit les effets de ses brulures et perd {premier.PV // 8} PV, il est désormais à {premier.PV}")
+       if second.effet == "burn":
+          second.PV -= (second.PV // 8)
+          print(f"{second.nom} subit les effets de ses brulures et perd {second.PV // 8} PV, il est désormais à {second.PV}")
+       if premier.effet == "poison":
+          premier.PV -= (premier.PV // 8)
+          print(f"{premier.nom} subit les effets de l'empoisonnement et perd {premier.PV // 8} PV, il est désormais à {premier.PV}")
+       if second.effet == "poison":
+          second.PV -= (second.PV // 8)
+          print(f"{second.nom} subit les effets de l'empoisonnement et perd {second.PV // 8} PV, il est désormais à {second.PV}")
+      #Les effets de la paralysie sont pris en compte dans miss()
+       
+
+       
        
             
 

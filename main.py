@@ -6,6 +6,8 @@ from gestion_combat import lancement
 
 Salameche = Dic_pokemons["Salameche"]
 Carapuce = Dic_pokemons["Carapuce"]
+Bulbizarre = Dic_pokemons["Bulbizarre"]
+Pikachu = Dic_pokemons["Pikachu"]
 
-partie = lancement(Salameche, Carapuce)
+partie = lancement(Pikachu, Carapuce)
 partie.lancement_combat()

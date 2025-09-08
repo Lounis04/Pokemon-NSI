@@ -3,29 +3,29 @@ import random
 
 #Dictionnaire des types dans pokemon génération 3#
 type_dic = {
-    "Normal": {"Normal": 1, "Feu": 1, "Eau": 1, "Plante": 1, "Électrik": 1, "Glace": 1, "Combat": 2, "Poison": 1 ,"Sol": 1,"Vol": 1,"Psy": 1,"Insecte": 1,"Roche": 0.5,"Spectre": 0,"Dragon": 1,"Tenebres": 1,"Acier": 0.5},
-    "Feu": {"Normal": 1, "Feu": 0.5, "Eau": 0.5, "Plante": 2, "Électrik": 1, "Glace": 2, "Combat": 1, "Poison": 1 ,"Sol": 1,"Vol": 1,"Psy": 1,"Insecte": 2,"Roche": 0.5,"Spectre": 1,"Dragon": 0.5,"Tenebres": 1,"Acier": 2},
-    "Eau": {"Normal": 1, "Feu": 2, "Eau": 0.5, "Plante": 0.5, "Électrik": 1, "Glace": 1, "Combat": 1, "Poison": 1 ,"Sol": 2,"Vol": 1,"Psy": 1,"Insecte": 1,"Roche": 2,"Spectre": 1,"Dragon": 0.5,"Tenebres": 1,"Acier": 1},
-    "Plante": {"Normal": 1, "Feu": 0.5, "Eau": 2, "Plante": 0.5, "Électrik": 1, "Glace": 1, "Combat": 1, "Poison": 0.5 ,"Sol": 2,"Vol": 0.5,"Psy": 1,"Insecte": 0.5,"Roche": 2,"Spectre": 1,"Dragon": 0.5,"Tenebres": 1,"Acier": 0.5},
-    "Electrik": {"Normal": 1, "Feu": 1, "Eau": 2, "Plante": 0.5, "Électrik": 0.5, "Glace": 1, "Combat": 1, "Poison": 1 ,"Sol": 0,"Vol": 2,"Psy": 1,"Insecte": 1,"Roche": 1,"Spectre": 1,"Dragon": 0.5,"Tenebres": 1,"Acier": 1},
-    "Glace": {"Normal": 1, "Feu": 0.5, "Eau": 0.5, "Plante": 2, "Électrik": 1, "Glace": 0.5, "Combat": 1, "Poison": 1 ,"Sol": 2,"Vol": 2,"Psy": 1,"Insecte": 1,"Roche": 1,"Spectre": 1,"Dragon": 2,"Tenebres": 1,"Acier": 0.5},
-    "Combat": {"Normal": 2, "Feu": 1, "Eau": 1, "Plante": 1, "Électrik": 1, "Glace": 2, "Combat": 1, "Poison": 0.5 ,"Sol": 1,"Vol": 0.5,"Psy": 0.5,"Insecte": 0.5,"Roche": 2,"Spectre": 0,"Dragon": 1,"Tenebres": 2,"Acier": 2},
-    "Poison": {"Normal": 1, "Feu": 1, "Eau": 1, "Plante": 2, "Électrik": 1, "Glace": 1, "Combat": 1, "Poison": 0.5 ,"Sol": 0.5,"Vol": 1,"Psy": 1,"Insecte": 1,"Roche": 0.5,"Spectre": 0.5,"Dragon": 1,"Tenebres": 1,"Acier": 0},
-    "Sol": {"Normal": 1, "Feu": 2, "Eau": 1, "Plante": 0.5, "Électrik": 2, "Glace": 1, "Combat": 1, "Poison": 2 ,"Sol": 1,"Vol": 0,"Psy": 1,"Insecte": 0.5,"Roche": 2,"Spectre": 1,"Dragon": 1,"Tenebres": 1,"Acier": 2},
-    "Vol": {"Normal": 1, "Feu": 1, "Eau": 1, "Plante": 2, "Électrik": 0.5, "Glace": 1, "Combat": 2, "Poison": 1 ,"Sol": 1,"Vol": 1,"Psy": 1,"Insecte": 2,"Roche": 0.5,"Spectre": 1,"Dragon": 1,"Tenebres": 1,"Acier": 0.5},
-    "Psy": {"Normal": 1, "Feu": 1, "Eau": 1, "Plante": 1, "Électrik": 1, "Glace": 1, "Combat": 2, "Poison": 2 ,"Sol": 1,"Vol": 1,"Psy": 0.5,"Insecte": 1,"Roche": 1,"Spectre": 1,"Dragon": 1,"Tenebres": 0,"Acier": 0.5},
-    "Insecte": {"Normal": 1, "Feu": 0.5, "Eau": 1, "Plante": 2, "Électrik": 1, "Glace": 1, "Combat": 0.5, "Poison": 0.5 ,"Sol": 1,"Vol": 0.5,"Psy": 2,"Insecte": 1,"Roche": 1,"Spectre": 0.5,"Dragon": 1,"Tenebres": 2,"Acier": 0.5},
-    "Roche": {"Normal": 1, "Feu": 2, "Eau": 1, "Plante": 1, "Électrik": 1, "Glace": 2, "Combat": 0.5, "Poison": 1 ,"Sol": 0.5,"Vol": 2,"Psy": 1,"Insecte": 2,"Roche": 1,"Spectre": 1,"Dragon": 1,"Tenebres": 1,"Acier": 0.5},
-    "Spectre": {"Normal": 0, "Feu": 1, "Eau": 1, "Plante": 1, "Électrik": 1, "Glace": 1, "Combat": 1, "Poison": 1 ,"Sol": 1,"Vol": 1,"Psy": 2,"Insecte": 1,"Roche": 1,"Spectre": 2,"Dragon": 1,"Tenebres": 0.5,"Acier": 0.5},
-    "Dragon": {"Normal": 1, "Feu": 1, "Eau": 1, "Plante": 1, "Électrik": 1, "Glace": 1, "Combat": 1, "Poison": 1 ,"Sol": 1,"Vol": 1,"Psy": 1,"Insecte": 1,"Roche": 1,"Spectre": 1,"Dragon": 2,"Tenebres": 1,"Acier": 0.5},
-    "Tenebres": {"Normal": 1, "Feu": 1, "Eau": 1, "Plante": 1, "Électrik": 1, "Glace": 1, "Combat": 0.5, "Poison": 1 ,"Sol": 1,"Vol": 1,"Psy": 2,"Insecte": 1,"Roche": 1,"Spectre": 2,"Dragon": 1,"Tenebres": 0.5,"Acier": 0.5},
-    "Acier": {"Normal": 1, "Feu": 0.5, "Eau": 0.5, "Plante": 1, "Électrik": 1, "Glace": 2, "Combat": 1, "Poison": 1 ,"Sol": 1,"Vol": 1,"Psy": 1,"Insecte": 1,"Roche": 2,"Spectre": 1,"Dragon": 1,"Tenebres": 1,"Acier": 0.5},
+    "Normal": {"Normal": 1, "Feu": 1, "Eau": 1, "Plante": 1, "Electrik": 1, "Glace": 1, "Combat": 2, "Poison": 1 ,"Sol": 1,"Vol": 1,"Psy": 1,"Insecte": 1,"Roche": 0.5,"Spectre": 0,"Dragon": 1,"Tenebres": 1,"Acier": 0.5},
+    "Feu": {"Normal": 1, "Feu": 0.5, "Eau": 0.5, "Plante": 2, "Electrik": 1, "Glace": 2, "Combat": 1, "Poison": 1 ,"Sol": 1,"Vol": 1,"Psy": 1,"Insecte": 2,"Roche": 0.5,"Spectre": 1,"Dragon": 0.5,"Tenebres": 1,"Acier": 2},
+    "Eau": {"Normal": 1, "Feu": 2, "Eau": 0.5, "Plante": 0.5, "Electrik": 1, "Glace": 1, "Combat": 1, "Poison": 1 ,"Sol": 2,"Vol": 1,"Psy": 1,"Insecte": 1,"Roche": 2,"Spectre": 1,"Dragon": 0.5,"Tenebres": 1,"Acier": 1},
+    "Plante": {"Normal": 1, "Feu": 0.5, "Eau": 2, "Plante": 0.5, "Electrik": 1, "Glace": 1, "Combat": 1, "Poison": 0.5 ,"Sol": 2,"Vol": 0.5,"Psy": 1,"Insecte": 0.5,"Roche": 2,"Spectre": 1,"Dragon": 0.5,"Tenebres": 1,"Acier": 0.5},
+    "Electrik": {"Normal": 1, "Feu": 1, "Eau": 2, "Plante": 0.5, "Electrik": 0.5, "Glace": 1, "Combat": 1, "Poison": 1 ,"Sol": 0,"Vol": 2,"Psy": 1,"Insecte": 1,"Roche": 1,"Spectre": 1,"Dragon": 0.5,"Tenebres": 1,"Acier": 1},
+    "Glace": {"Normal": 1, "Feu": 0.5, "Eau": 0.5, "Plante": 2, "Electrik": 1, "Glace": 0.5, "Combat": 1, "Poison": 1 ,"Sol": 2,"Vol": 2,"Psy": 1,"Insecte": 1,"Roche": 1,"Spectre": 1,"Dragon": 2,"Tenebres": 1,"Acier": 0.5},
+    "Combat": {"Normal": 2, "Feu": 1, "Eau": 1, "Plante": 1, "Electrik": 1, "Glace": 2, "Combat": 1, "Poison": 0.5 ,"Sol": 1,"Vol": 0.5,"Psy": 0.5,"Insecte": 0.5,"Roche": 2,"Spectre": 0,"Dragon": 1,"Tenebres": 2,"Acier": 2},
+    "Poison": {"Normal": 1, "Feu": 1, "Eau": 1, "Plante": 2, "Electrik": 1, "Glace": 1, "Combat": 1, "Poison": 0.5 ,"Sol": 0.5,"Vol": 1,"Psy": 1,"Insecte": 1,"Roche": 0.5,"Spectre": 0.5,"Dragon": 1,"Tenebres": 1,"Acier": 0},
+    "Sol": {"Normal": 1, "Feu": 2, "Eau": 1, "Plante": 0.5, "Electrik": 2, "Glace": 1, "Combat": 1, "Poison": 2 ,"Sol": 1,"Vol": 0,"Psy": 1,"Insecte": 0.5,"Roche": 2,"Spectre": 1,"Dragon": 1,"Tenebres": 1,"Acier": 2},
+    "Vol": {"Normal": 1, "Feu": 1, "Eau": 1, "Plante": 2, "Electrik": 0.5, "Glace": 1, "Combat": 2, "Poison": 1 ,"Sol": 1,"Vol": 1,"Psy": 1,"Insecte": 2,"Roche": 0.5,"Spectre": 1,"Dragon": 1,"Tenebres": 1,"Acier": 0.5},
+    "Psy": {"Normal": 1, "Feu": 1, "Eau": 1, "Plante": 1, "Electrik": 1, "Glace": 1, "Combat": 2, "Poison": 2 ,"Sol": 1,"Vol": 1,"Psy": 0.5,"Insecte": 1,"Roche": 1,"Spectre": 1,"Dragon": 1,"Tenebres": 0,"Acier": 0.5},
+    "Insecte": {"Normal": 1, "Feu": 0.5, "Eau": 1, "Plante": 2, "Electrik": 1, "Glace": 1, "Combat": 0.5, "Poison": 0.5 ,"Sol": 1,"Vol": 0.5,"Psy": 2,"Insecte": 1,"Roche": 1,"Spectre": 0.5,"Dragon": 1,"Tenebres": 2,"Acier": 0.5},
+    "Roche": {"Normal": 1, "Feu": 2, "Eau": 1, "Plante": 1, "Electrik": 1, "Glace": 2, "Combat": 0.5, "Poison": 1 ,"Sol": 0.5,"Vol": 2,"Psy": 1,"Insecte": 2,"Roche": 1,"Spectre": 1,"Dragon": 1,"Tenebres": 1,"Acier": 0.5},
+    "Spectre": {"Normal": 0, "Feu": 1, "Eau": 1, "Plante": 1, "Electrik": 1, "Glace": 1, "Combat": 1, "Poison": 1 ,"Sol": 1,"Vol": 1,"Psy": 2,"Insecte": 1,"Roche": 1,"Spectre": 2,"Dragon": 1,"Tenebres": 0.5,"Acier": 0.5},
+    "Dragon": {"Normal": 1, "Feu": 1, "Eau": 1, "Plante": 1, "Electrik": 1, "Glace": 1, "Combat": 1, "Poison": 1 ,"Sol": 1,"Vol": 1,"Psy": 1,"Insecte": 1,"Roche": 1,"Spectre": 1,"Dragon": 2,"Tenebres": 1,"Acier": 0.5},
+    "Tenebres": {"Normal": 1, "Feu": 1, "Eau": 1, "Plante": 1, "Electrik": 1, "Glace": 1, "Combat": 0.5, "Poison": 1 ,"Sol": 1,"Vol": 1,"Psy": 2,"Insecte": 1,"Roche": 1,"Spectre": 2,"Dragon": 1,"Tenebres": 0.5,"Acier": 0.5},
+    "Acier": {"Normal": 1, "Feu": 0.5, "Eau": 0.5, "Plante": 1, "Electrik": 1, "Glace": 2, "Combat": 1, "Poison": 1 ,"Sol": 1,"Vol": 1,"Psy": 1,"Insecte": 1,"Roche": 2,"Spectre": 1,"Dragon": 1,"Tenebres": 1,"Acier": 0.5},
 }
 
 #Classe qui s'occupe des pokemons et de leurs attributs spécifiques#
         
 class pokemon():
-    def __init__(self,nom,type,PV,attaque,defense,attaque_spe,defense_spe,vitesse,liste_attaques):
+    def __init__(self,nom,type,PV,attaque,defense,attaque_spe,defense_spe,vitesse,liste_attaques,effet):
         self.nom = nom
         self.PV = PV
         self.type = type
@@ -34,13 +34,13 @@ class pokemon():
         self.attaque_spe = attaque_spe
         self.defense_spe = defense_spe
         self.vitesse = vitesse
-        self.liste_attaques = [attaque.copier() for attaque in liste_attaques] 
+        self.liste_attaques = [attaque.copier() for attaque in liste_attaques]
+        self.effet = effet
 
     #méthode qui affiche le menu spécfique au pokemon qui joue #
 
     def afficher_menu(self):
-        res = None
-        while res == None:
+        while True:
          res = input(f"Que voulez vous faire ?: (Attaquer/Infos/Items/Changer de pokémon)\n> ")
          if res == "Infos":
            print(f"Informations sur les attaques de {self.nom} : ")
@@ -57,6 +57,8 @@ class pokemon():
           print(f"Attaques disponibles pour {self.nom} :")
           for i, attaque in enumerate(self.liste_attaques, 1):
             print(f"{i}. {attaque.nom} (Puissance: {attaque.puissance}, PP: {attaque.pp})")
+          break
+          
 
    #méthode de calcul du stab#
 
@@ -95,6 +97,11 @@ class pokemon():
    #méthode qui crée une possibilité que le pokemon attaquant rate#
        
     def miss(self,res):
+       if self.effet == "paralysie":
+          chance = random.randint(1,100)
+          if chance <= 25:
+             print("f{self.nom} est paralysé , il ne peut attaquer")
+             return True
        chance = random.randint(1,100)
        if chance <= self.liste_attaques[res - 1].precision:
           return False
@@ -103,8 +110,12 @@ class pokemon():
        
    #méthode principale qui inclut STAB , miss , coups critique , efficacité type , elle calcule les dégats des attaques , gère la perte des PP , la perte des pv de celui qui subit l'attaque#
 
-    def degats(self,second):
-       res = int(input())
+    def degats(self,joueur,second):
+       degats = 0
+       if self != joueur: #si c'est un bot#
+         res = random.randint(1, len(self.liste_attaques))
+       if joueur == None: #si c'est le joueur qui attaque ou bien c'est un combat entre joueurs#
+          res = int(input())
        if res > 4 or res < 1:
         print("Valeur possible depassé veuillez réessayer")
         res = int(input())
@@ -115,8 +126,15 @@ class pokemon():
        if miss == False:
          if self.liste_attaques[res - 1].categorie == "physique":
            degats = int(((((2.4 * self.attaque * self.liste_attaques[res - 1].puissance) /  second.defense ) / 50 ) + 2) * (STAB * Efficacite * critique * random.uniform(0.85,1))) #randon.uniform inclut les valeurs en float##int permet d'arrondir à l"entier inférieur#
+           if self.liste_attaques[res - 1].effet != None:
+              self.appliquer_un_statut(second,res)
          if self.liste_attaques[res - 1].categorie == "special":
            degats = int(((((2.4 * self.attaque_spe * self.liste_attaques[res - 1].puissance) /  second.defense_spe ) / 50 ) + 2) * (STAB * Efficacite * critique * random.uniform(0.85,1)))
+           if self.liste_attaques[res - 1].effet != None:
+              self.appliquer_un_statut(second,res)
+         if self.liste_attaques[res - 1].categorie == "statut":
+            if self.liste_attaques[res - 1].effet != None:
+             self.appliquer_un_statut(second,res)
        else:
           print(f"{self.nom} a raté son attaque")
           degats = 0
@@ -124,37 +142,42 @@ class pokemon():
        if second.PV < 0:
           second.PV = 0
        self.liste_attaques[res - 1].pp -= 1
-       print(f"{self.nom} a infligé {degats} de dégats en utulisant {self.liste_attaques[res - 1].nom} sur {second.nom} qui est à {second.PV} PV, à son tour !")
+       if degats > 0:
+          print(f"{self.nom} a infligé {degats} de dégats en utulisant {self.liste_attaques[res - 1].nom} sur {second.nom} qui est à {second.PV} PV, à son tour !")
 
-#méthode qui calcule les dégats pour le bot#
-
-    def degats_bot (self,second):
-       res = random.randint(1, len(self.liste_attaques))
-       STAB = self.calcul_stab(res)
-       Efficacite = self.efficacite_type(second,res)
-       critique = self.coup_critique()
-       miss = self.miss(res)
-       if miss == False:
-         if self.liste_attaques[res - 1].categorie == "physique":
-           degats = int(((((2.4 * self.attaque * self.liste_attaques[res - 1].puissance) /  second.defense ) / 50 ) + 2) * (STAB * Efficacite * critique * random.uniform(0.85,1))) #randon.uniform inclut les valeurs en float##int permet d'arrondir à l"entier inférieur#
-         if self.liste_attaques[res - 1].categorie == "special":
-           degats = int(((((2.4 * self.attaque_spe * self.liste_attaques[res - 1].puissance) /  second.defense_spe ) / 50 ) + 2) * (STAB * Efficacite * critique * random.uniform(0.85,1)))
-       else:
-          print(f"{self.nom} a raté son attaque")
-          degats = 0
-       second.PV -= degats
-       if second.PV < 0:
-          second.PV = 0
-       self.liste_attaques[res - 1].pp -= 1
-       print(f"{self.nom} a infligé {degats} de dégats en utulisant {self.liste_attaques[res - 1].nom} sur {second.nom} qui est à {second.PV} PV, à son tour !")
+    def appliquer_un_statut(self,second,res):
+         if self.liste_attaques[res - 1].effet[0] == "burn" and random.randint(1,self.liste_attaques[res - 1].effet[1]) == 1:
+            if second.effet != "burn":
+              print(f"{second.nom} a été brulé")
+            second.effet = "burn"
+            second.attaque = second.attaque // 2
+            if "(brulé)" not in second.nom: #si l'effet est déjà dans le nom#
+              second.nom += "(brulé)"
+         if self.liste_attaques[res - 1].effet[0] == "poison" and random.randint(1,self.liste_attaques[res - 1].effet[1]) == 1:
+               if second.effet != "poison":
+                 print(f"{second.nom} a été empoisonné")
+               second.effet = "poison"
+               if "(empoisonné)" not in second.nom: #si l'effet est déjà dans le nom#
+                second.nom += "(empoisonné)"
+         if self.liste_attaques[res - 1].effet[0] == "paralysie" and random.randint(1,self.liste_attaques[res - 1].effet[1]) == 1:
+            if second.effet != "paralysie":
+               print(f"{second.nom} a été paralysé")
+            second.effet = "paralysie"
+            second.vitesse = second.vitesse // 4
+            if "(paralysé)" not in second.nom: #si l'effet est déjà dans le nom#
+              second.nom += "(paralysé)"
 
 
 #Liste des pokémons avec leurs attributs#
 
-Salameche = pokemon(nom= "Salameche",type = "Feu",PV = 39,attaque = 52,defense = 43,attaque_spe = 60,defense_spe = 50,vitesse = 65,liste_attaques = [Dic_attaques["Charge"],Dic_attaques["Griffe"],Dic_attaques["Flammeche"],Dic_attaques["Griffe acier"]])
-Carapuce = pokemon( nom= "Carapuce",type = "Eau",PV = 44,attaque = 48,defense = 65,attaque_spe = 50,defense_spe = 64,vitesse = 43,liste_attaques =[Dic_attaques["Charge"],Dic_attaques["Pistolet à O"],Dic_attaques["Ecume"],Dic_attaques["Morsure"]])
+Salameche = pokemon(nom= "Salameche",type = "Feu",PV = 39,attaque = 52,defense = 43,attaque_spe = 60,defense_spe = 50,vitesse = 65,liste_attaques = [Dic_attaques["Charge"],Dic_attaques["Griffe"],Dic_attaques["Flammeche"],Dic_attaques["Griffe acier"]],effet = None)
+Carapuce = pokemon( nom= "Carapuce",type = "Eau",PV = 44,attaque = 48,defense = 65,attaque_spe = 50,defense_spe = 64,vitesse = 43,liste_attaques =[Dic_attaques["Charge"],Dic_attaques["Pistolet à O"],Dic_attaques["Ecume"],Dic_attaques["Morsure"]],effet = None)
+Bulbizarre = pokemon( nom= "Bulbizarre",type = "Plante",PV = 45,attaque = 49,defense = 49,attaque_spe = 65,defense_spe = 65,vitesse = 45,liste_attaques =[Dic_attaques["Charge"],Dic_attaques["Fouet lianes"],Dic_attaques["Tranch'herbe"],Dic_attaques["Poudre toxik"]],effet = None)
+Pikachu = pokemon( nom= "Pikachu",type = "Electrik",PV = 35,attaque = 55,defense = 30,attaque_spe = 50,defense_spe = 40,vitesse = 90,liste_attaques =[Dic_attaques["Charge"],Dic_attaques["Cage éclair"],Dic_attaques["Eclair"],Dic_attaques["Vive attaque"]],effet = None)
 
 Dic_pokemons = {
    "Salameche": Salameche,
-   "Carapuce": Carapuce
+   "Carapuce": Carapuce,
+   "Bulbizarre" : Bulbizarre,
+   "Pikachu" : Pikachu
 }

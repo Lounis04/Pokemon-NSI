@@ -39,8 +39,11 @@ class pokemon():
 
     #méthode qui affiche le menu spécfique au pokemon qui joue #
 
-    def afficher_menu(self):
+    def afficher_menu(self,joueur):
         while True:
+         if self != joueur: #si c'est un bot#
+            retour = random.randint(1, len(self.liste_attaques))
+            return retour
          res = input(f"Que voulez vous faire ?: (Attaquer/Infos/Items/Changer de pokémon)\n> ")
          if res == "Infos":
            print(f"Informations sur les attaques de {self.nom} : ")
@@ -57,7 +60,13 @@ class pokemon():
           print(f"Attaques disponibles pour {self.nom} :")
           for i, attaque in enumerate(self.liste_attaques, 1):
             print(f"{i}. {attaque.nom} (Puissance: {attaque.puissance}, PP: {attaque.pp})")
-          break
+          if self == joueur: #si c'est le joueur qui attaque ou bien c'est un combat entre joueurs#
+               retour = int(input())
+          if retour > 4 or retour < 1:
+             print("Valeur possible depassé veuillez réessayer")
+             retour = int(input())
+          return retour
+         break
           
 
    #méthode de calcul du stab#
@@ -100,7 +109,7 @@ class pokemon():
        if self.effet == "paralysie":
           chance = random.randint(1,100)
           if chance <= 25:
-             print("f{self.nom} est paralysé , il ne peut attaquer")
+             print(f"{self.nom} est paralysé , il ne peut attaquer")
              return True
        chance = random.randint(1,100)
        if chance <= self.liste_attaques[res - 1].precision:
@@ -110,15 +119,8 @@ class pokemon():
        
    #méthode principale qui inclut STAB , miss , coups critique , efficacité type , elle calcule les dégats des attaques , gère la perte des PP , la perte des pv de celui qui subit l'attaque#
 
-    def degats(self,joueur,second):
+    def degats(self,second,res):
        degats = 0
-       if self != joueur: #si c'est un bot#
-         res = random.randint(1, len(self.liste_attaques))
-       if joueur == None: #si c'est le joueur qui attaque ou bien c'est un combat entre joueurs#
-          res = int(input())
-       if res > 4 or res < 1:
-        print("Valeur possible depassé veuillez réessayer")
-        res = int(input())
        STAB = self.calcul_stab(res)
        Efficacite = self.efficacite_type(second,res)
        critique = self.coup_critique()

@@ -14,6 +14,8 @@ class lancement():
         print("combat lancé")
         mode = self.choix_mode_jeu() #0 correspond à du joueur contre joueur et 1 du joueur contre bot#
         if mode == 0:
+           self.pokemon1.remise_niveau()
+           self.pokemon2.remise_niveau()
            while self.pokemon1.PV > 0 or self.pokemon2.PV > 0:
              if rounds == 1:
               print(f">>>>>>>>>> début du round {rounds} <<<<<<<<<<<")
@@ -50,6 +52,8 @@ class lancement():
               bot = self.pokemon2
            else:
               bot = self.pokemon1
+           self.pokemon1.remise_niveau()
+           self.pokemon2.remise_niveau()
            while self.pokemon1.PV > 0 or self.pokemon2.PV > 0:
              print(f"Dresseur de {joueur.nom} que voulez vous faire ?")
              res_joueur = joueur.afficher_menu(joueur)

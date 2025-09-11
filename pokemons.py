@@ -25,7 +25,7 @@ type_dic = {
 #Classe qui s'occupe des pokemons et de leurs attributs spécifiques#
         
 class pokemon():
-    def __init__(self,nom,type,PV,attaque,defense,attaque_spe,defense_spe,vitesse,liste_attaques,effet):
+    def __init__(self,nom,type,PV,attaque,defense,attaque_spe,defense_spe,vitesse,liste_attaques,effet,niveau):
         self.nom = nom
         self.PV = PV
         self.type = type
@@ -36,6 +36,7 @@ class pokemon():
         self.vitesse = vitesse
         self.liste_attaques = [attaque.copier() for attaque in liste_attaques]
         self.effet = effet
+        self.niveau = niveau
 
     #méthode qui affiche le menu spécfique au pokemon qui joue #
 
@@ -62,7 +63,7 @@ class pokemon():
             print(f"{i}. {attaque.nom} (Puissance: {attaque.puissance}, PP: {attaque.pp})")
           if self == joueur: #si c'est le joueur qui attaque ou bien c'est un combat entre joueurs#
                retour = int(input())
-          if retour > 4 or retour < 1:
+          while retour > 4 or retour < 1:
              print("Valeur possible depassé veuillez réessayer")
              retour = int(input())
           return retour
@@ -72,13 +73,14 @@ class pokemon():
    #méthode de calcul du stab#
 
     def calcul_stab(self,res):
-      for i in range(len(self.type)):
-       if self.type[i] == self.liste_attaques[res - 1].type:
-          STAB = 1.5
-       else:
-          STAB = 1
-       return STAB
-
+        if isinstance(self.type,tuple): #Cas de double type
+           if self.liste_attaques[res - 1].type in self.type:
+              return 1.5
+        else:
+           if self.type == self.liste_attaques[res - 1].type: # Cas un seul type#
+              return 1.5
+        return 1
+           
    #méthode qui gère les coups critiques , leur probabilité et leur multiplicateur#
 
     def coup_critique(self):
@@ -134,11 +136,11 @@ class pokemon():
        miss = self.miss(res)
        if miss == False:
          if self.liste_attaques[res - 1].categorie == "physique":
-           degats = int(((((2.4 * self.attaque * self.liste_attaques[res - 1].puissance) /  second.defense ) / 50 ) + 2) * (STAB * Efficacite * critique * random.uniform(0.85,1))) #randon.uniform inclut les valeurs en float##int permet d'arrondir à l"entier inférieur#
+           degats = int((((((self.niveau * 0.4 + 2) * self.attaque * self.liste_attaques[res - 1].puissance) /  second.defense ) / 50 ) + 2) * (STAB * Efficacite * critique * random.uniform(0.85,1))) #randon.uniform inclut les valeurs en float##int permet d'arrondir à l"entier inférieur#
            if self.liste_attaques[res - 1].effet != None:
               self.appliquer_un_statut(second,res)
          if self.liste_attaques[res - 1].categorie == "special":
-           degats = int(((((2.4 * self.attaque_spe * self.liste_attaques[res - 1].puissance) /  second.defense_spe ) / 50 ) + 2) * (STAB * Efficacite * critique * random.uniform(0.85,1)))
+           degats = int((((((self.niveau * 0.4 + 2) * self.attaque_spe * self.liste_attaques[res - 1].puissance) /  second.defense_spe ) / 50 ) + 2) * (STAB * Efficacite * critique * random.uniform(0.85,1)))
            if self.liste_attaques[res - 1].effet != None:
               self.appliquer_un_statut(second,res)
          if self.liste_attaques[res - 1].categorie == "statut":
@@ -176,13 +178,27 @@ class pokemon():
             if "(paralysé)" not in second.nom: #si l'effet est déjà dans le nom#
               second.nom += "(paralysé)"
 
-
+    def remise_niveau(self):
+        niveau = int(input(f"De quel niveau est {self.nom} ?\n>  "))
+        while niveau < 1 or niveau > 100:
+           print("Valeur incorrecte , veuillez recommencer")
+           niveau = int(input(f"De quel niveau est {self.pokemon.nom} ?\n>  "))
+        self.niveau = niveau
+        self.PV = (((2 * self.PV) * niveau) // 100) + niveau + 10
+        self.attaque =  (((2 * self.attaque) * niveau) // 100) + 5
+        self.attaque_spe = (((2 * self.attaque_spe) * niveau) // 100) + 5
+        self.defense = (((2 * self.defense) * niveau) // 100) + 5
+        self.defense_spe = (((2 * self.defense_spe) * niveau) // 100) + 5
+        self.vitesse = (((2 * self.vitesse) * niveau) // 100) + 5
+        self.nom += f"({self.niveau})"
+        
+       
 #Liste des pokémons avec leurs attributs#
 
-Salameche = pokemon(nom= "Salameche",type = "Feu",PV = 39,attaque = 52,defense = 43,attaque_spe = 60,defense_spe = 50,vitesse = 65,liste_attaques = [Dic_attaques["Charge"],Dic_attaques["Griffe"],Dic_attaques["Flammeche"],Dic_attaques["Griffe acier"]],effet = None)
-Carapuce = pokemon( nom= "Carapuce",type = "Eau",PV = 44,attaque = 48,defense = 65,attaque_spe = 50,defense_spe = 64,vitesse = 43,liste_attaques =[Dic_attaques["Charge"],Dic_attaques["Pistolet à O"],Dic_attaques["Ecume"],Dic_attaques["Morsure"]],effet = None)
-Bulbizarre = pokemon( nom= "Bulbizarre",type = "Plante",PV = 45,attaque = 49,defense = 49,attaque_spe = 65,defense_spe = 65,vitesse = 45,liste_attaques =[Dic_attaques["Charge"],Dic_attaques["Fouet lianes"],Dic_attaques["Tranch'herbe"],Dic_attaques["Poudre toxik"]],effet = None)
-Pikachu = pokemon( nom= "Pikachu",type = "Electrik",PV = 35,attaque = 55,defense = 30,attaque_spe = 50,defense_spe = 40,vitesse = 90,liste_attaques =[Dic_attaques["Charge"],Dic_attaques["Cage éclair"],Dic_attaques["Eclair"],Dic_attaques["Vive attaque"]],effet = None)
+Salameche = pokemon(nom= "Salameche",type = "Feu",PV = 39,attaque = 52,defense = 43,attaque_spe = 60,defense_spe = 50,vitesse = 65,liste_attaques = [Dic_attaques["Charge"],Dic_attaques["Griffe"],Dic_attaques["Flammeche"],Dic_attaques["Griffe acier"]],effet = None,niveau = 1)
+Carapuce = pokemon( nom= "Carapuce",type = "Eau",PV = 44,attaque = 48,defense = 65,attaque_spe = 50,defense_spe = 64,vitesse = 43,liste_attaques =[Dic_attaques["Charge"],Dic_attaques["Pistolet à O"],Dic_attaques["Ecume"],Dic_attaques["Morsure"]],effet = None,niveau = 1)
+Bulbizarre = pokemon( nom= "Bulbizarre",type = "Plante",PV = 45,attaque = 49,defense = 49,attaque_spe = 65,defense_spe = 65,vitesse = 45,liste_attaques =[Dic_attaques["Charge"],Dic_attaques["Fouet lianes"],Dic_attaques["Tranch'herbe"],Dic_attaques["Poudre toxik"]],effet = None,niveau = 1)
+Pikachu = pokemon( nom= "Pikachu",type = "Electrik",PV = 35,attaque = 55,defense = 30,attaque_spe = 50,defense_spe = 40,vitesse = 90,liste_attaques =[Dic_attaques["Charge"],Dic_attaques["Cage éclair"],Dic_attaques["Eclair"],Dic_attaques["Vive attaque"]],effet = None,niveau = 1)
 
 Dic_pokemons = {
    "Salameche": Salameche,

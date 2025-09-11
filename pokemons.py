@@ -37,6 +37,15 @@ class pokemon():
         self.liste_attaques = [attaque.copier() for attaque in liste_attaques]
         self.effet = effet
         self.niveau = niveau
+        self.stages_stats = { #Niveaux des stats par rapport aux attaques de status#
+          "Attaque" : 0,
+          "Attaque_spe": 0,
+          "Defense": 0,
+          "Defense_spe": 0,
+          "Vitesse": 0
+       }
+        self.effet_round = None
+        self.confusion_duree = None
 
     #méthode qui affiche le menu spécfique au pokemon qui joue #
 
@@ -144,6 +153,7 @@ class pokemon():
            if self.liste_attaques[res - 1].effet != None:
               self.appliquer_un_statut(second,res)
          if self.liste_attaques[res - 1].categorie == "statut":
+            self.statuts_à_niveau(second,res)
             if self.liste_attaques[res - 1].effet != None:
              self.appliquer_un_statut(second,res)
        else:
@@ -168,15 +178,27 @@ class pokemon():
                if second.effet != "poison":
                  print(f"{second.nom} a été empoisonné")
                second.effet = "poison"
-               if "(empoisonné)" not in second.nom: #si l'effet est déjà dans le nom#
+               if "(empoisonné)" not in second.nom: 
                 second.nom += "(empoisonné)"
          if self.liste_attaques[res - 1].effet[0] == "paralysie" and random.randint(1,self.liste_attaques[res - 1].effet[1]) == 1:
             if second.effet != "paralysie":
                print(f"{second.nom} a été paralysé")
             second.effet = "paralysie"
             second.vitesse = second.vitesse // 4
-            if "(paralysé)" not in second.nom: #si l'effet est déjà dans le nom#
+            if "(paralysé)" not in second.nom: 
               second.nom += "(paralysé)"
+         if self.liste_attaques[res - 1].effet[0] == "confusion" and random.randint(1,self.liste_attaques[res - 1].effet[1]) == 1:
+            if second.effet != "confusion":
+               print(f"{second.nom} est confus")
+            second.effet = "confusion"
+            if "(confus)" not in second.nom: 
+              second.nom += "(confus)"
+         if self.liste_attaques[res - 1].effet[0] == "sommeil" and random.randint(1,self.liste_attaques[res - 1].effet[1]) == 1:
+            if second.effet != "sommeil":
+               print(f"{second.nom} a été endormi")
+            second.effet = "sommeil"
+            if "(ZzzzZ)" not in second.nom: 
+              second.nom += "(ZzzzZ)"
 
     def remise_niveau(self):
         niveau = int(input(f"De quel niveau est {self.nom} ?\n>  "))
@@ -191,18 +213,61 @@ class pokemon():
         self.defense_spe = (((2 * self.defense_spe) * niveau) // 100) + 5
         self.vitesse = (((2 * self.vitesse) * niveau) // 100) + 5
         self.nom += f"({self.niveau})"
+        self.stats_originales = (self.nom,self.PV, self.attaque, self.attaque_spe, self.defense, self.defense_spe) #stats originales du pokemon sauvegardés dans un tuple#
+
+    def statuts_à_niveau(self,second,res):
+        dic_niveaux = {
+          -6 : 0.25,
+          -5: 2/7,
+          -4: 1/3,
+          -3: 2/5,
+          -2: 1/2,
+          -1: 2/3,
+           0: 1,
+           1: 1.5,
+           2: 2,
+           3: 2.5,
+           4: 3,
+           5: 3.5,
+           6: 4,
+         }
+
+        if self.liste_attaques[res - 1].nom == "Mimi-queue":
+           second.stages_stats["Defense"] -= 1
+           second.stages_stats["Defense"] = max(-6, second.stages_stats["Defense"]) #éviter que l'on descende en dessous de -6#
+           second.defense = second.stats_originales[4] * dic_niveaux[second.stages_stats["Defense"]]
+           print(f"La défende de {second.nom} a baissé d'1 cran et est désormais de {second.defense}")
+  
+        if self.liste_attaques[res - 1].nom == "Rugissement":
+           second.stages_stats["Attaque"] -= 1
+           second.stages_stats["Attaque"] = max(-6, second.stages_stats["Attaque"]) #éviter que l'on descende en dessous de -6#
+           second.attaque = second.stats_originales[2] * dic_niveaux[second.stages_stats["Attaque"]]
+           print(f"L'attaque de {second.nom} a baissé d'1 cran et est désormais de {second.attaque}")
+
+        if self.liste_attaques[res - 1].nom == "Plénitude":
+           self.stages_stats["Attaque_spe"] += 1
+           self.stages_stats["Attaque_spe"] = min(6, self.stages_stats["Attaque_spe"]) #éviter que l'on augmente en haut de 6#
+           self.attaque_spe = self.stats_originales[3] * dic_niveaux[self.stages_stats["Attaque_spe"]]
+           self.stages_stats["Defense_spe"] += 1
+           self.stages_stats["Defense_spe"] = min(6, self.stages_stats["Defense_spe"]) #éviter que l'on augmente en haut de 6#
+           self.defense_spe = self.stats_originales[5] * dic_niveaux[self.stages_stats["Defense_spe"]]
+           print(f"La défende spéciale et l'attaque spéciale de {self.nom} ont augmentés d'1 niveau")
+           
         
+  
        
 #Liste des pokémons avec leurs attributs#
 
 Salameche = pokemon(nom= "Salameche",type = "Feu",PV = 39,attaque = 52,defense = 43,attaque_spe = 60,defense_spe = 50,vitesse = 65,liste_attaques = [Dic_attaques["Charge"],Dic_attaques["Griffe"],Dic_attaques["Flammeche"],Dic_attaques["Griffe acier"]],effet = None,niveau = 1)
 Carapuce = pokemon( nom= "Carapuce",type = "Eau",PV = 44,attaque = 48,defense = 65,attaque_spe = 50,defense_spe = 64,vitesse = 43,liste_attaques =[Dic_attaques["Charge"],Dic_attaques["Pistolet à O"],Dic_attaques["Ecume"],Dic_attaques["Morsure"]],effet = None,niveau = 1)
 Bulbizarre = pokemon( nom= "Bulbizarre",type = "Plante",PV = 45,attaque = 49,defense = 49,attaque_spe = 65,defense_spe = 65,vitesse = 45,liste_attaques =[Dic_attaques["Charge"],Dic_attaques["Fouet lianes"],Dic_attaques["Tranch'herbe"],Dic_attaques["Poudre toxik"]],effet = None,niveau = 1)
-Pikachu = pokemon( nom= "Pikachu",type = "Electrik",PV = 35,attaque = 55,defense = 30,attaque_spe = 50,defense_spe = 40,vitesse = 90,liste_attaques =[Dic_attaques["Charge"],Dic_attaques["Cage éclair"],Dic_attaques["Eclair"],Dic_attaques["Vive attaque"]],effet = None,niveau = 1)
+Pikachu = pokemon( nom= "Pikachu",type = "Electrik",PV = 35,attaque = 55,defense = 30,attaque_spe = 50,defense_spe = 40,vitesse = 90,liste_attaques =[Dic_attaques["Mimi-queue"],Dic_attaques["Cage éclair"],Dic_attaques["Eclair"],Dic_attaques["Vive attaque"]],effet = None,niveau = 1)
+Tarsal = pokemon( nom= "Tarsal",type = "Psy",PV = 28,attaque = 25,defense = 25,attaque_spe = 45,defense_spe = 35,vitesse = 40,liste_attaques =[Dic_attaques["Rugissement"],Dic_attaques["Choc mental"],Dic_attaques["Plénitude"],Dic_attaques["Hypnose"]],effet = None,niveau = 1)
 
 Dic_pokemons = {
    "Salameche": Salameche,
    "Carapuce": Carapuce,
    "Bulbizarre" : Bulbizarre,
    "Pikachu" : Pikachu,
+   "Tarsal" : Tarsal
 }

@@ -41,9 +41,11 @@ Poudre_toxik = Attaques(nom= "Poudre toxik",type = "Poison",categorie= "statut",
 Cage_eclair = Attaques(nom= "Cage éclair",type = "Electrik",categorie= "statut",puissance= None,precision= 100,pp= 20,priorite = 0,effet = ("paralysie",1))
 Eclair = Attaques(nom= "Eclair",type = "Electrik",categorie= "special",puissance= 40,precision= 100,pp= 30,priorite = 0,effet = ("paralysie",10))
 Vive_attaque = Attaques(nom= "Vive attaque",type = "Normal",categorie= "physique",puissance= 40,precision= 100,pp= 30,priorite = 1,effet = None)
-
-
-
+Mimi_queue = Attaques(nom= "Mimi-queue",type = "Normal",categorie= "statut",puissance= 0,precision= 100,pp= 30,priorite = 0,effet = None)
+Rugissement = Attaques(nom= "Rugissement",type = "Normal",categorie= "statut",puissance= 0,precision= 100,pp= 10,priorite = 0,effet = None)
+Choc_mental = Attaques(nom= "Choc mental",type = "Psy",categorie= "special",puissance= 50,precision= 100,pp= 25,priorite = 0,effet = ("confusion",1))
+Plénitude = Attaques(nom= "Plénitude",type = "Psy",categorie= "statut",puissance= 0,precision= 100,pp= 20,priorite = 0,effet = None)
+Hypnose = Attaques(nom= "Hypnose",type = "Psy",categorie= "statut",puissance= 0,precision= 60,pp= 20,priorite = 0,effet = ("sommeil",1))
 
 #Dictionnaire des attaques#
 
@@ -59,5 +61,10 @@ Dic_attaques = {"Charge":Charge,
                 "Poudre toxik": Poudre_toxik,
                 "Cage éclair": Cage_eclair,
                 "Eclair" : Eclair,
-                "Vive attaque": Vive_attaque
+                "Vive attaque": Vive_attaque,
+                "Mimi-queue": Mimi_queue,
+                "Rugissement": Rugissement,
+                "Choc mental": Choc_mental,
+                "Plénitude": Plénitude,
+                "Hypnose": Hypnose
                 }

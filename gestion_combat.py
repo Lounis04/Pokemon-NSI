@@ -27,7 +27,7 @@ class lancement():
              res_pokemon2 = self.pokemon2.afficher_menu(joueur) 
              premier = self.joue_en_premier(res_pokemon1,res_pokemon2)
              second = self.joue_en_second(premier)
-             self.applications_statut(premier,second)
+             self.applications_statut(premier,second,rounds)
              print(f">>>>>>>>>> {premier.nom} commence <<<<<<<<<<<")
              if self.pokemon1 == premier:
               premier.degats(second,res_pokemon1)
@@ -60,7 +60,7 @@ class lancement():
              res_bot = bot.afficher_menu(joueur)
              premier = self.joue_en_premier(res_joueur,res_bot)
              second = self.joue_en_second(premier)
-             self.applications_statut(premier,second)
+             self.applications_statut(premier,second,rounds)
              print(f">>>>>>>>>>>>> début du round {rounds}, {premier.nom} commence <<<<<<<<<<<")
              if joueur == premier:
               premier.degats(second,res_joueur)
@@ -123,7 +123,7 @@ class lancement():
        
    #Méthode qui applique les effets des status#
 
-    def applications_statut(self,premier,second):
+    def applications_statut(self,premier,second,rounds):
        if premier.effet == "burn":
           premier.PV -= (premier.PV // 8)
           print(f"{premier.nom} subit les effets de ses brulures et perd {premier.PV // 8} PV, il est désormais à {premier.PV}")
@@ -136,56 +136,44 @@ class lancement():
        if second.effet == "poison":
           second.PV -= (second.PV // 8)
           print(f"{second.nom} subit les effets de l'empoisonnement et perd {second.PV // 8} PV, il est désormais à {second.PV}")
+       if premier.effet == "confusion":
+          if premier.effet_round == None:
+             premier.effet_round = rounds
+             premier.durée_confusion = random.randint(1,1)
+          if rounds - premier.effet_round < premier.durée_confusion:
+             if random.randint(1,1) == 1:
+                degats_confusion = int((((((premier.niveau * 0.4 + 2) * 40) * premier.attaque /  premier.defense ) / 50 ) + 2) * random.uniform(0.85,1))
+                premier.PV -= degats_confusion
+                print(f"{premier.nom} subit les effets de la confusion et perd {degats_confusion} PV, il a désormais {second.PV} PV")
+             else:
+                print(f"{premier.nom} surmonte sa confusion ce tour-ci")
+          else:
+             print(f"{premier.nom} n'est plus confus.")
+             premier.effet = None
+             premier.effet_round = None
+             premier.confusion_duree = None
+             premier.nom = premier.nom.replace("(confus)", "")
+       if second.effet == "confusion":
+          if second.effet_round == None:
+             second.effet_round = rounds
+             second.durée_confusion = random.randint(1,1)
+          if rounds - premier.effet_round < premier.durée_confusion:
+             if random.randint(1,1) == 1:
+                degats_confusion = int((((((second.niveau * 0.4 + 2) * 40) * second.attaque /  second.defense ) / 50 ) + 2) * random.uniform(0.85,1))
+                second.PV -= degats_confusion
+                print(f"{second.nom} subit les effets de la confusion et perd {degats_confusion} PV , il a désormais {second.PV} PV")
+             else:
+                print(f"{second.nom} surmonte sa confusion ce tour-ci")
+          else:
+             print(f"{second.nom} n'est plus confus.")
+             second.effet = None
+             second.effet_round = None
+             second.confusion_duree = None
+             second.nom = second.nom.replace("(confus)", "")
+             
+       
       #Les effets de la paralysie sont pris en compte dans miss()
 
-    def lancement_combat_save(self):
-        rounds = 1
-        print("combat lancé")
-        mode = self.choix_mode_jeu() #0 correspond à du joueur contre joueur et 1 du joueur contre bot#
-        if mode == 0:
-           while self.pokemon1.PV > 0 or self.pokemon2.PV > 0:
-             premier = self.joue_en_premier()
-             second = self.joue_en_second(premier)
-             self.applications_statut(premier,second)
-             if rounds == 1:
-              print(f" >>>>>>>>>> début du round {rounds}, {premier.nom} commence <<<<<<<<<<<")
-             premier.afficher_menu()
-             premier.degats(None,second)
-             if second.PV <= 0:  
-                print(f"{second.nom} a été vaincu!")
-                break
-             print(f">>>>>>>>>> Au tour de {second.nom} <<<<<<<<<<")
-             second.afficher_menu() 
-             second.degats(None,premier) 
-             if premier.PV <= 0:  
-                print(f"{premier.nom} a été vaincu!")
-                break
-             rounds += 1
-             print(f" >>>>>>>>>> début du round {rounds}, {premier.nom} commence <<<<<<<<<<<")
-        if mode == 1:
-           joueur = self.choix_pokemon_bot()
-           while self.pokemon1.PV > 0 or self.pokemon2.PV > 0:
-             premier = self.joue_en_premier()
-             second = self.joue_en_second(premier)
-             self.applications_statut(premier,second)
-             print(f">>>>>>>>>>>>> début du round {rounds}, {premier.nom} commence >>>>>>>>>>>>")
-             if premier == joueur:
-               premier.afficher_menu()
-               premier.degats(None,second)
-               print(f">>>>>>>>>> Au tour de {second.nom} <<<<<<<<<<")
-               second.degats(joueur,premier)
-               if second.PV <= 0:
-                print(f"{second.nom} a été vaincu !")
-                break
-             if second == joueur:
-              premier.degats(joueur,second)
-              print(f">>>>>>>>>> Au tour de {second.nom} <<<<<<<<<<")
-              second.afficher_menu()
-              second.degats(None,premier)
-              if premier.PV <= 0:
-               print(f"{premier.nom} a été vaincu !")
-               break
-             rounds += 1
        
 
        

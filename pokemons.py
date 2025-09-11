@@ -72,7 +72,8 @@ class pokemon():
    #méthode de calcul du stab#
 
     def calcul_stab(self,res):
-       if self.type == self.liste_attaques[res - 1].type:
+      for i in range(len(self.type)):
+       if self.type[i] == self.liste_attaques[res - 1].type:
           STAB = 1.5
        else:
           STAB = 1
@@ -90,8 +91,14 @@ class pokemon():
    #méthode qui s'occupe de gérer le multiplicateur des attaques selon le type de l'attaque et du pokemon qui la subit#
        
     def efficacite_type(self,second,res):
-       Efficacite = type_dic[self.liste_attaques[res - 1].type][second.type]
-       if Efficacite == 2:
+       if not isinstance(second.type, tuple): #Permet de savoir si second.type n'est pas un tuple , ducoup si le pokemon a 1 seul type#
+         Efficacite = type_dic[self.liste_attaques[res - 1].type][second.type]
+       else:
+          Efficacite = type_dic[self.liste_attaques[res - 1].type][second.type[0]] * type_dic[self.liste_attaques[res - 1].type][second.type[1]]
+       if Efficacite == 4:
+          print("C'est Ultra efficace ! Bravo !")
+          return Efficacite
+       if Efficacite >= 2:
           print("C'est super efficace !")
           return Efficacite
        elif Efficacite == 1:
@@ -181,5 +188,5 @@ Dic_pokemons = {
    "Salameche": Salameche,
    "Carapuce": Carapuce,
    "Bulbizarre" : Bulbizarre,
-   "Pikachu" : Pikachu
+   "Pikachu" : Pikachu,
 }

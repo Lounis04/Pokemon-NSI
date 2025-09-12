@@ -44,8 +44,10 @@ class pokemon():
           "Defense_spe": 0,
           "Vitesse": 0
        }
-        self.effet_round = None
+        self.effet_round_confusion = None
+        self.effet_round_sommeil = None
         self.confusion_duree = None
+        self.sommeil_duree = None
 
     #méthode qui affiche le menu spécfique au pokemon qui joue #
 
@@ -123,13 +125,25 @@ class pokemon():
        
    #méthode qui crée une possibilité que le pokemon attaquant rate#
        
-    def miss(self,res):
+    def miss(self,res,rounds):
+       chance = random.randint(1,100)
        if self.effet == "paralysie":
-          chance = random.randint(1,100)
           if chance <= 25:
              print(f"{self.nom} est paralysé , il ne peut attaquer")
              return True
-       chance = random.randint(1,100)
+       if self.effet == "sommeil":
+          if self.effet_round_sommeil == None:
+             self.effet_round_sommeil = rounds
+             self.durée_sommeil = random.randint(1,4)
+          if rounds - self.effet_round_sommeil < self.durée_sommeil:
+             print(f"{self.nom} fait de beaux rêves !")
+             return True
+          else:
+             print(f"{self.nom} se réveille !")
+             self.effet = None
+             self.effet_round_sommeil = None
+             self.sommeil_duree = None
+             self.nom = self.nom.replace("(ZzzzZ)", "")
        if chance <= self.liste_attaques[res - 1].precision:
           return False
        else:
@@ -137,12 +151,12 @@ class pokemon():
        
    #méthode principale qui inclut STAB , miss , coups critique , efficacité type , elle calcule les dégats des attaques , gère la perte des PP , la perte des pv de celui qui subit l'attaque#
 
-    def degats(self,second,res):
+    def degats(self,second,res,rounds):
        degats = 0
        STAB = self.calcul_stab(res)
        Efficacite = self.efficacite_type(second,res)
        critique = self.coup_critique()
-       miss = self.miss(res)
+       miss = self.miss(res,rounds)
        if miss == False:
          if self.liste_attaques[res - 1].categorie == "physique":
            degats = int((((((self.niveau * 0.4 + 2) * self.attaque * self.liste_attaques[res - 1].puissance) /  second.defense ) / 50 ) + 2) * (STAB * Efficacite * critique * random.uniform(0.85,1))) #randon.uniform inclut les valeurs en float##int permet d'arrondir à l"entier inférieur#
@@ -236,7 +250,7 @@ class pokemon():
            second.stages_stats["Defense"] -= 1
            second.stages_stats["Defense"] = max(-6, second.stages_stats["Defense"]) #éviter que l'on descende en dessous de -6#
            second.defense = second.stats_originales[4] * dic_niveaux[second.stages_stats["Defense"]]
-           print(f"La défende de {second.nom} a baissé d'1 cran et est désormais de {second.defense}")
+           print(f"La défense de {second.nom} a baissé d'1 cran et est désormais de {second.defense}")
   
         if self.liste_attaques[res - 1].nom == "Rugissement":
            second.stages_stats["Attaque"] -= 1
@@ -251,7 +265,7 @@ class pokemon():
            self.stages_stats["Defense_spe"] += 1
            self.stages_stats["Defense_spe"] = min(6, self.stages_stats["Defense_spe"]) #éviter que l'on augmente en haut de 6#
            self.defense_spe = self.stats_originales[5] * dic_niveaux[self.stages_stats["Defense_spe"]]
-           print(f"La défende spéciale et l'attaque spéciale de {self.nom} ont augmentés d'1 niveau")
+           print(f"La défense spéciale et l'attaque spéciale de {self.nom} ont augmentés d'1 niveau")
            
         
   
@@ -271,3 +285,4 @@ Dic_pokemons = {
    "Pikachu" : Pikachu,
    "Tarsal" : Tarsal
 }
+

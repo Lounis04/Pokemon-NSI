@@ -30,17 +30,17 @@ class lancement():
              self.applications_statut(premier,second,rounds)
              print(f">>>>>>>>>> {premier.nom} commence <<<<<<<<<<<")
              if self.pokemon1 == premier:
-              premier.degats(second,res_pokemon1)
+              premier.degats(second,res_pokemon1,rounds)
              else:
-              premier.degats(second,res_pokemon2)
+              premier.degats(second,res_pokemon2,rounds)
              if second.PV <= 0:  
                 print(f"{second.nom} a été vaincu!")
                 break
              print(f">>>>>>>>>> Au tour de {second.nom} <<<<<<<<<<")
              if self.pokemon1 == second:
-               second.degats(premier,res_pokemon1) 
+               second.degats(premier,res_pokemon1,rounds) 
              else:
-                second.degats(premier,res_pokemon2)
+                second.degats(premier,res_pokemon2,rounds)
              if premier.PV <= 0:  
                 print(f"{premier.nom} a été vaincu!")
                 break
@@ -63,17 +63,17 @@ class lancement():
              self.applications_statut(premier,second,rounds)
              print(f">>>>>>>>>>>>> début du round {rounds}, {premier.nom} commence <<<<<<<<<<<")
              if joueur == premier:
-              premier.degats(second,res_joueur)
+              premier.degats(second,res_joueur,rounds)
              else:
-              premier.degats(second,res_bot)
+              premier.degats(second,res_bot,rounds)
              if second.PV <= 0:  
                 print(f"{second.nom} a été vaincu!")
                 break
              print(f">>>>>>>>>> Au tour de {second.nom} <<<<<<<<<<")
              if joueur == second:
-               second.degats(premier,res_joueur) 
+               second.degats(premier,res_joueur,rounds) 
              else:
-                second.degats(premier,res_bot)
+                second.degats(premier,res_bot,rounds)
              if premier.PV <= 0:  
                 print(f"{premier.nom} a été vaincu!")
              rounds += 1
@@ -124,62 +124,30 @@ class lancement():
    #Méthode qui applique les effets des status#
 
     def applications_statut(self,premier,second,rounds):
-       if premier.effet == "burn":
-          premier.PV -= (premier.PV // 8)
-          print(f"{premier.nom} subit les effets de ses brulures et perd {premier.PV // 8} PV, il est désormais à {premier.PV}")
-       if second.effet == "burn":
-          second.PV -= (second.PV // 8)
-          print(f"{second.nom} subit les effets de ses brulures et perd {second.PV // 8} PV, il est désormais à {second.PV}")
-       if premier.effet == "poison":
-          premier.PV -= (premier.PV // 8)
-          print(f"{premier.nom} subit les effets de l'empoisonnement et perd {premier.PV // 8} PV, il est désormais à {premier.PV}")
-       if second.effet == "poison":
-          second.PV -= (second.PV // 8)
-          print(f"{second.nom} subit les effets de l'empoisonnement et perd {second.PV // 8} PV, il est désormais à {second.PV}")
-       if premier.effet == "confusion":
-          if premier.effet_round == None:
-             premier.effet_round = rounds
-             premier.durée_confusion = random.randint(1,1)
-          if rounds - premier.effet_round < premier.durée_confusion:
-             if random.randint(1,1) == 1:
-                degats_confusion = int((((((premier.niveau * 0.4 + 2) * 40) * premier.attaque /  premier.defense ) / 50 ) + 2) * random.uniform(0.85,1))
-                premier.PV -= degats_confusion
-                print(f"{premier.nom} subit les effets de la confusion et perd {degats_confusion} PV, il a désormais {second.PV} PV")
+       tuple = (premier,second)
+       for i in range(len(tuple)):
+        if tuple[i].effet == "burn":
+          tuple[i].PV -= (tuple[i].PV // 8)
+          print(f"{tuple[i].nom} subit les effets de ses brulures et perd {tuple[i].PV // 8} PV, il est désormais à {tuple[i].PV}")
+        if tuple[i].effet == "poison":
+          tuple[i].PV -= (tuple[i].PV // 8)
+          print(f"{tuple[i].nom} subit les effets de l'empoisonnement et perd {tuple[i].PV // 8} PV, il est désormais à {tuple[i].PV}")
+        if tuple[i].effet == "confusion":
+          if tuple[i].effet_round_confusion == None:
+             tuple[i].effet_round_confusion = rounds
+             tuple[i].durée_confusion = random.randint(1,4)
+          if rounds - tuple[i].effet_round_confusion < tuple[i].durée_confusion:
+             if random.randint(1,2) == 1:
+                degats_confusion = int((((((tuple[i].niveau * 0.4 + 2) * 40) * tuple[i].attaque /  tuple[i].defense ) / 50 ) + 2) * random.uniform(0.85,1))
+                tuple[i].PV -= degats_confusion
+                print(f"{tuple[i].nom} subit les effets de la confusion et perd {degats_confusion} PV, il a désormais {tuple[i].PV} PV")
              else:
-                print(f"{premier.nom} surmonte sa confusion ce tour-ci")
+                print(f"{tuple[i].nom} surmonte sa confusion ce tour-ci")
           else:
-             print(f"{premier.nom} n'est plus confus.")
-             premier.effet = None
-             premier.effet_round = None
-             premier.confusion_duree = None
-             premier.nom = premier.nom.replace("(confus)", "")
-       if second.effet == "confusion":
-          if second.effet_round == None:
-             second.effet_round = rounds
-             second.durée_confusion = random.randint(1,1)
-          if rounds - premier.effet_round < premier.durée_confusion:
-             if random.randint(1,1) == 1:
-                degats_confusion = int((((((second.niveau * 0.4 + 2) * 40) * second.attaque /  second.defense ) / 50 ) + 2) * random.uniform(0.85,1))
-                second.PV -= degats_confusion
-                print(f"{second.nom} subit les effets de la confusion et perd {degats_confusion} PV , il a désormais {second.PV} PV")
-             else:
-                print(f"{second.nom} surmonte sa confusion ce tour-ci")
-          else:
-             print(f"{second.nom} n'est plus confus.")
-             second.effet = None
-             second.effet_round = None
-             second.confusion_duree = None
-             second.nom = second.nom.replace("(confus)", "")
+             print(f"{tuple[i].nom} n'est plus confus.")
+             tuple[i].effet = None
+             tuple[i].effet_round_confusion = None
+             tuple[i].confusion_duree = None
+             tuple[i].nom = tuple[i].nom.replace("(confus)", "")
              
-       
-      #Les effets de la paralysie sont pris en compte dans miss()
-
-       
-
-       
-       
-            
-
-        
-
-
+      #Les effets de la paralysie et du sommeil sont pris en compte dans miss()

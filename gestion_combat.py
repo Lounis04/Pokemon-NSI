@@ -13,9 +13,12 @@ class lancement():
         rounds = 1
         print("combat lancé")
         mode = self.choix_mode_jeu() #0 correspond à du joueur contre joueur et 1 du joueur contre bot#
+        items = self.choix_items()
         if mode == 0:
            self.pokemon1.remise_niveau()
            self.pokemon2.remise_niveau()
+           if items == True: 
+            self.pokemon1.Inventaires(self.pokemon2)
            while self.pokemon1.PV > 0 or self.pokemon2.PV > 0:
              if rounds == 1:
               print(f">>>>>>>>>> début du round {rounds} <<<<<<<<<<<")
@@ -54,6 +57,9 @@ class lancement():
               bot = self.pokemon1
            self.pokemon1.remise_niveau()
            self.pokemon2.remise_niveau()
+           if items == True: 
+            self.pokemon1.Inventaires()
+            self.pokemon2.Inventaires()
            while self.pokemon1.PV > 0 or self.pokemon2.PV > 0:
              print(f"Dresseur de {joueur.nom} que voulez vous faire ?")
              res_joueur = joueur.afficher_menu(joueur)
@@ -82,11 +88,28 @@ class lancement():
    #Méthode qui demande le choix du mode de jeu : contre un joueur ou un bot#
 
     def choix_mode_jeu(self):
+      while True:
         res = input("Voulez-vous jouer contre un joueur ou un bot ? (joueur/bot)\n> ") # \n permet de sauter la ligne pour la réponse  #
         if res == "joueur":
            return 0
         if res == "bot":
            return 1
+        else:
+          continue
+          
+  
+   #Méthode#
+    
+    def choix_items(self):
+      while True:
+       res = input("Voulez-vous jouer avec des items ? (Oui/Non)\n> ")
+       if res == "Oui":
+          return True
+       if res == "Non":
+          return False
+       else:
+         continue
+
 
    #Méthode qui demande au joueur quel pokemon il veut jouer s'il souhaite jouer contre un bot#           
 
@@ -126,13 +149,14 @@ class lancement():
     def applications_statut(self,premier,second,rounds):
        tuple = (premier,second)
        for i in range(len(tuple)):
-        if tuple[i].effet == "burn":
+        for j in range(len(tuple[i].effet)):
+         if tuple[i].effet[j] == "burn":
           tuple[i].PV -= (tuple[i].PV // 8)
           print(f"{tuple[i].nom} subit les effets de ses brulures et perd {tuple[i].PV // 8} PV, il est désormais à {tuple[i].PV}")
-        if tuple[i].effet == "poison":
+         if tuple[i].effet[j] == "poison":
           tuple[i].PV -= (tuple[i].PV // 8)
           print(f"{tuple[i].nom} subit les effets de l'empoisonnement et perd {tuple[i].PV // 8} PV, il est désormais à {tuple[i].PV}")
-        if tuple[i].effet == "confusion":
+         if tuple[i].effet[j] == "confusion":
           if tuple[i].effet_round_confusion == None:
              tuple[i].effet_round_confusion = rounds
              tuple[i].durée_confusion = random.randint(1,4)
@@ -145,9 +169,11 @@ class lancement():
                 print(f"{tuple[i].nom} surmonte sa confusion ce tour-ci")
           else:
              print(f"{tuple[i].nom} n'est plus confus.")
-             tuple[i].effet = None
+             tuple[i].effet.remove("confusion")
              tuple[i].effet_round_confusion = None
              tuple[i].confusion_duree = None
              tuple[i].nom = tuple[i].nom.replace("(confus)", "")
-             
-      #Les effets de la paralysie et du sommeil sont pris en compte dans miss()
+
+                   #Les effets de la paralysie et du sommeil sont pris en compte dans miss()
+
+

@@ -14,7 +14,7 @@ class Attaques():
 
    # méthode qui crée une copie des attaques spécifiques aux pokemons pour éviter la globalisation des PP,ceci permet d'éviter par exemple que quand pokemon1 utulise charge alors pokemon2 perd 1 PP de charge aussi#
 
-   def copier(self):     
+   def copier_attaques(self):     
        return Attaques(
            nom=self.nom,
            type=self.type,

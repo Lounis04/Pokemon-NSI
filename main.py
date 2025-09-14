@@ -10,5 +10,5 @@ Bulbizarre = Dic_pokemons["Bulbizarre"]
 Pikachu = Dic_pokemons["Pikachu"]
 Tarsal = Dic_pokemons["Tarsal"]
 
-partie = lancement(Salameche, Tarsal)
+partie = lancement(Pikachu, Tarsal)
 partie.lancement_combat()

@@ -1,4 +1,5 @@
 from attaques import Dic_attaques
+from items import Dic_items
 import random
 
 #Dictionnaire des types dans pokemon génération 3#
@@ -34,9 +35,11 @@ class pokemon():
         self.attaque_spe = attaque_spe
         self.defense_spe = defense_spe
         self.vitesse = vitesse
-        self.liste_attaques = [attaque.copier() for attaque in liste_attaques]
-        self.effet = effet
+        self.liste_attaques = [attaque.copier_attaques() for attaque in liste_attaques]
+        self.effet = []
         self.niveau = niveau
+        liste_items = [Dic_items["Potion"],Dic_items["Antidote"],Dic_items["Anti-brulure"],Dic_items["Reveil"],Dic_items["Anti-Para"]]
+        self.liste_items = [items.copier_items() for items in liste_items]
         self.stages_stats = { #Niveaux des stats par rapport aux attaques de status#
           "Attaque" : 0,
           "Attaque_spe": 0,
@@ -63,7 +66,11 @@ class pokemon():
             print(f">>> {attaque.nom}: Type: {attaque.type},Catégorie: {attaque.categorie},Puissance: {attaque.puissance},Précision: {attaque.precision},PP: {attaque.pp},Priorité: {attaque.priorite},Effet: {attaque.effet}")
            continue
          if res == "Items":
-          print("selection des items")
+          print("Selection des items")
+          for i, items in enumerate(self.liste_items, 1):
+            print(f"{i}. {items.nom}: PV: {items.PV_item},PP: {items.PP_item}, quantité: {items.quantite},description: {items.description}")
+          choix_item = int(input())
+          self.utulisation_item(choix_item)
           continue
          if res =="Changer de pokémon":
            print("Changement de pokémon")
@@ -78,7 +85,9 @@ class pokemon():
              print("Valeur possible depassé veuillez réessayer")
              retour = int(input())
           return retour
-         break
+         else:
+            continue
+         
           
 
    #méthode de calcul du stab#
@@ -127,11 +136,12 @@ class pokemon():
        
     def miss(self,res,rounds):
        chance = random.randint(1,100)
-       if self.effet == "paralysie":
+       for i in range(len(self.effet) - 1,-1,-1):
+        if self.effet[i] == "paralysie":
           if chance <= 25:
              print(f"{self.nom} est paralysé , il ne peut attaquer")
              return True
-       if self.effet == "sommeil":
+        if self.effet[i] == "sommeil":
           if self.effet_round_sommeil == None:
              self.effet_round_sommeil = rounds
              self.durée_sommeil = random.randint(1,4)
@@ -140,7 +150,7 @@ class pokemon():
              return True
           else:
              print(f"{self.nom} se réveille !")
-             self.effet = None
+             self.effet.remove("sommeil")
              self.effet_round_sommeil = None
              self.sommeil_duree = None
              self.nom = self.nom.replace("(ZzzzZ)", "")
@@ -182,35 +192,35 @@ class pokemon():
 
     def appliquer_un_statut(self,second,res):
          if self.liste_attaques[res - 1].effet[0] == "burn" and random.randint(1,self.liste_attaques[res - 1].effet[1]) == 1:
-            if second.effet != "burn":
+            if "burn" not in second.effet:
               print(f"{second.nom} a été brulé")
-            second.effet = "burn"
-            second.attaque = second.attaque // 2
+              second.effet.append("burn")
+              second.attaque = second.attaque // 2
             if "(brulé)" not in second.nom: #si l'effet est déjà dans le nom#
               second.nom += "(brulé)"
          if self.liste_attaques[res - 1].effet[0] == "poison" and random.randint(1,self.liste_attaques[res - 1].effet[1]) == 1:
-               if second.effet != "poison":
+               if "poison" not in second.effet:
                  print(f"{second.nom} a été empoisonné")
-               second.effet = "poison"
+                 second.effet.append("poison")
                if "(empoisonné)" not in second.nom: 
                 second.nom += "(empoisonné)"
          if self.liste_attaques[res - 1].effet[0] == "paralysie" and random.randint(1,self.liste_attaques[res - 1].effet[1]) == 1:
-            if second.effet != "paralysie":
+            if "paralysie" not in second.effet:
                print(f"{second.nom} a été paralysé")
-            second.effet = "paralysie"
-            second.vitesse = second.vitesse // 4
+               second.effet.append("paralysie")
+               second.vitesse = second.vitesse // 4
             if "(paralysé)" not in second.nom: 
               second.nom += "(paralysé)"
          if self.liste_attaques[res - 1].effet[0] == "confusion" and random.randint(1,self.liste_attaques[res - 1].effet[1]) == 1:
-            if second.effet != "confusion":
+            if "confusion" not in second.effet:
                print(f"{second.nom} est confus")
-            second.effet = "confusion"
+               second.effet.append("confusion")
             if "(confus)" not in second.nom: 
               second.nom += "(confus)"
          if self.liste_attaques[res - 1].effet[0] == "sommeil" and random.randint(1,self.liste_attaques[res - 1].effet[1]) == 1:
-            if second.effet != "sommeil":
+            if "sommeil" not in second.effet:
                print(f"{second.nom} a été endormi")
-            second.effet = "sommeil"
+               second.effet.append("sommeil")
             if "(ZzzzZ)" not in second.nom: 
               second.nom += "(ZzzzZ)"
 
@@ -266,10 +276,51 @@ class pokemon():
            self.stages_stats["Defense_spe"] = min(6, self.stages_stats["Defense_spe"]) #éviter que l'on augmente en haut de 6#
            self.defense_spe = self.stats_originales[5] * dic_niveaux[self.stages_stats["Defense_spe"]]
            print(f"La défense spéciale et l'attaque spéciale de {self.nom} ont augmentés d'1 niveau")
+
+    def Inventaires(self,pokemon2):
+       while True:
+        for item in self.liste_items:
+            quantite = int(input(f"Quelle quantité voulez-vous attribuer à l'objet : {item.nom} ? (Pour les 2 Pokémons)\n> "))
+            if quantite >= 0:  
+                item.quantite = quantite  
+                for item2 in pokemon2.liste_items:
+                    if item2.nom == item.nom:
+                        item2.quantite = quantite
+        break  
            
-        
-  
+    def utulisation_item(self,res):
+       if self.liste_items[res - 1].nom == "Potion" and self.liste_items[res - 1].quantite > 0:
+          self.PV += 20
+          self.liste_items[res - 1].quantite -= 1
+          print(f"L'utulisation d'une potion permet à {self.nom} de regagner 20 PV , {self.nom} est désormais à {self.PV} PV")
+
+       if self.liste_items[res - 1].nom == "Antidote" and self.liste_items[res - 1].quantite > 0 and "poison" in self.effet:
+          self.effet.remove("poison")
+          self.nom = self.nom.replace("(empoisonné)", "")
+          self.liste_items[res - 1].quantite -= 1
+          print(f"L'utulisation d'un Antidote permet à {self.nom} de guérir de som empoisonnement")
+
+       if self.liste_items[res - 1].nom == "Anti-brulure" and self.liste_items[res - 1].quantite > 0 and "burn" in self.effet:
+          self.effet.remove("burn")
+          self.nom = self.nom.replace("(brulé)", "")
+          self.liste_items[res - 1].quantite -= 1
+          self.attaque = self.attaque * 2
+          print(f"L'utulisation d'un Anti-brulure permet à {self.nom} de guérir de sa brulure")
+
+       if self.liste_items[res - 1].nom == "Reveil" and self.liste_items[res - 1].quantite > 0 and "sommeil" in self.effet:
+          self.effet.remove("sommeil")
+          self.nom = self.nom.replace("(ZzzzZ)", "")
+          self.liste_items[res - 1].quantite -= 1
+          print(f"L'utulisation d'un réveil permet à {self.nom} de se reveiller")
+
+       if self.liste_items[res - 1].nom == "Anti-Para" and self.liste_items[res - 1].quantite > 0 and "paralysie" in self.effet:
+          self.effet.remove("paralysie")
+          self.nom = self.nom.replace("(paralysé)", "")
+          self.liste_items[res - 1].quantite -= 1
+          self.vitesse = self.vitesse * 4
+          print(f"L'utulisation d'un Anti-Para permet à {self.nom} de guérir sa paralysie")
        
+
 #Liste des pokémons avec leurs attributs#
 
 Salameche = pokemon(nom= "Salameche",type = "Feu",PV = 39,attaque = 52,defense = 43,attaque_spe = 60,defense_spe = 50,vitesse = 65,liste_attaques = [Dic_attaques["Charge"],Dic_attaques["Griffe"],Dic_attaques["Flammeche"],Dic_attaques["Griffe acier"]],effet = None,niveau = 1)

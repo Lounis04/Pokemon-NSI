@@ -20,6 +20,11 @@ Antidote = Items("Antidote",0,0,0,"Soigne les pokémons empoisonnés")
 Anti_brule = Items("Anti-brulure",0,0,0,"Soigne les pokémons brulés")
 Reveil = Items("Reveil",0,0,0,"Réveille les pokémons endormis")
 Anti_para = Items("Anti-Para",0,0,0,"Soigne les pokémons paralysés")
+Guerison = Items("Guerison","max",0,0,"Soigne entièrement les pv d'un pokémon et enleve ses effets de statut")
+Potion_max = Items("Potion-max",0,0,0,"Soigne entiérement les PV d'un pokémon")
+Hyper_potion = Items("Hyper-potion",200,0,0,"Restaure 200 PV")
+Super_potion = Items("Super-potion",50,0,0,"Restaure 50 PV")
+Total_soin = Items("Total-soin",0,0,0,"Soigne les changements de statut d'un pokémon")
 
 
 Dic_items = {
@@ -27,5 +32,10 @@ Dic_items = {
     "Antidote": Antidote,
     "Anti-brulure": Anti_brule,
     "Reveil": Reveil,
-    "Anti-Para": Anti_para
+    "Anti-Para": Anti_para,
+    "Guerison": Guerison,
+    "Potion-max": Potion_max,
+    "Hyper-potion": Hyper_potion,
+    "Super-potion": Super_potion,
+    "Total-soin": Total_soin,
 }

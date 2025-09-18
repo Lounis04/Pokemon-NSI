@@ -38,8 +38,6 @@ class pokemon():
         self.liste_attaques = [attaque.copier_attaques() for attaque in liste_attaques]
         self.effet = []
         self.niveau = niveau
-        liste_items = [Dic_items["Potion"],Dic_items["Antidote"],Dic_items["Anti-brulure"],Dic_items["Reveil"],Dic_items["Anti-Para"],Dic_items["Guerison"],Dic_items["Potion-max"],Dic_items["Hyper-potion"],Dic_items["Super-potion"],Dic_items["Total-soin"]]
-        self.liste_items = [items.copier_items() for items in liste_items]
         self.stages_stats = { #Niveaux des stats par rapport aux attaques de status#
           "Attaque" : 0,
           "Attaque_spe": 0,
@@ -54,7 +52,7 @@ class pokemon():
 
     #méthode qui affiche le menu spécfique au pokemon qui joue #
 
-    def afficher_menu(self,joueur):
+    def afficher_menu(self,joueur,equipe):
         while True:
          if self != joueur: #si c'est un bot#
             retour = random.randint(1, len(self.liste_attaques))
@@ -67,20 +65,10 @@ class pokemon():
            continue
          if res == "Items":
           print("Selection des items")
-          for i, items in enumerate(self.liste_items, 1):
-            print(f"{i}. {items.nom}: PV: {items.PV_item},PP: {items.PP_item}, quantité: {items.quantite},description: {items.description}")
-          choix_item = input()
-          if choix_item.isdigit() and 0 < int(choix_item) < len(self.liste_items):
-           self.utulisation_item(choix_item)
-          else:
-           continue
+          return "items"
          if res =="Changer de pokémon":
            print("Changement de pokémon")
-           choix_pokemon = input()
-           if choix_pokemon.isdigit() and 0 < int(choix_pokemon) < len():
-              pass
-           else:
-            continue
+           return "changer"
          if res == "Attaquer":  
           print(f"Attaques disponibles pour {self.nom} :")
           for i, attaque in enumerate(self.liste_attaques, 1):
@@ -286,22 +274,11 @@ class pokemon():
            self.stages_stats["Defense_spe"] = min(6, self.stages_stats["Defense_spe"]) #éviter que l'on augmente en haut de 6#
            self.defense_spe = self.stats_originales[5] * dic_niveaux[self.stages_stats["Defense_spe"]]
            print(f"La défense spéciale et l'attaque spéciale de {self.nom} ont augmentés d'1 niveau")
-
-    def Inventaires(self,pokemon2):
-     for item in self.liste_items:
-        quantite = input(f"Quelle quantité voulez-vous attribuer à l'objet : {item.nom} ? (Pour les 2 Pokémons)\n> ")
-        while not quantite.isdigit():  #Vérifie que l'entrée est un entier positif#
-            print("Entrée invalide. Veuillez entrer un nombre entier positif ou nul.")
-            quantite = input(f"Quelle quantité voulez-vous attribuer à l'objet : {item.nom} ? (Pour les 2 Pokémons)\n> ")
-
-        quantite = int(quantite)
-        item.quantite = quantite  
-        for item2 in pokemon2.liste_items:
-         if item2.nom == item.nom:
-            item2.quantite = quantite
            
-    def utulisation_item(self,res):
-       if self.liste_items[res - 1].nom == "Potion" and self.liste_items[res - 1].quantite > 0:
+    def utulisation_item(self,res,equipe):
+       inventaire = self.inventaire1 if equipe == 1 else self.inventaire2
+       for item in inventaire:
+        if self.liste_items[res - 1].nom == "Potion" and self.liste_items[res - 1].quantite > 0:
           if self.liste_items[res - 1].PV_item + self.PV  > self.stats_originales[1]:
              self.PV = self.stats_originales[1]
           else:
@@ -309,7 +286,7 @@ class pokemon():
           self.liste_items[res - 1].quantite -= 1
           print(f"L'utulisation d'une potion permet à {self.nom} de regagner 20 PV , {self.nom} est désormais à {self.PV} PV")
 
-       if self.liste_items[res - 1].nom == "Hyper-potion" and self.liste_items[res - 1].quantite > 0:
+        if self.liste_items[res - 1].nom == "Hyper-potion" and self.liste_items[res - 1].quantite > 0:
           if self.liste_items[res - 1].PV_item + self.PV  > self.stats_originales[1]:
              self.PV = self.stats_originales[1]
           else:
@@ -317,7 +294,7 @@ class pokemon():
           self.liste_items[res - 1].quantite -= 1
           print(f"L'utulisation d'une Hyper-potion permet à {self.nom} de regagner 200 PV , {self.nom} est désormais à {self.PV} PV")
 
-       if self.liste_items[res - 1].nom == "Super-Potion" and self.liste_items[res - 1].quantite > 0:
+        if self.liste_items[res - 1].nom == "Super-Potion" and self.liste_items[res - 1].quantite > 0:
           if self.liste_items[res - 1].PV_item + self.PV  > self.stats_originales[1]:
              self.PV = self.stats_originales[1]
           else:
@@ -325,7 +302,7 @@ class pokemon():
           self.liste_items[res - 1].quantite -= 1
           print(f"L'utulisation d'une Super-potion permet à {self.nom} de regagner 50 PV , {self.nom} est désormais à {self.PV} PV")
 
-       if self.liste_items[res - 1].nom == "Guerison" and self.liste_items[res - 1].quantite > 0:
+        if self.liste_items[res - 1].nom == "Guerison" and self.liste_items[res - 1].quantite > 0:
           self.PV = self.stats_originales[1]
           self.liste_items[res - 1].quantite -= 1
           for effet in self.effet[:]:  # copie de la liste
@@ -337,12 +314,12 @@ class pokemon():
           self.nom = self.stats_originales[0]
           print(f"L'utulisation d'un objet de guérison permet à {self.nom} de regagner l'entiereté de ses PV et de supprimer ses effets de statut")
 
-       if self.liste_items[res - 1].nom == "Potion-max" and self.liste_items[res - 1].quantite > 0:
+        if self.liste_items[res - 1].nom == "Potion-max" and self.liste_items[res - 1].quantite > 0:
           self.PV = self.stats_originales[1]
           self.liste_items[res - 1].quantite -= 1
           print(f"L'utulisation d'une potion max permet à {self.nom} de regagner l'entiereté de ses PV")
 
-       if self.liste_items[res - 1].nom == "Total-soin" and self.liste_items[res - 1].quantite > 0:
+        if self.liste_items[res - 1].nom == "Total-soin" and self.liste_items[res - 1].quantite > 0:
           self.liste_items[res - 1].quantite -= 1
           for effet in self.effet[:]:  # copie de la liste
            if effet == "burn":
@@ -353,26 +330,26 @@ class pokemon():
           self.nom = self.stats_originales[0]
           print(f"L'utulisation d'un total-soin permet à {self.nom} de guérir de tous ses effets de statut")
 
-       if self.liste_items[res - 1].nom == "Antidote" and self.liste_items[res - 1].quantite > 0 and "poison" in self.effet:
+        if self.liste_items[res - 1].nom == "Antidote" and self.liste_items[res - 1].quantite > 0 and "poison" in self.effet:
           self.effet.remove("poison")
           self.nom = self.nom.replace("(empoisonné)", "")
           self.liste_items[res - 1].quantite -= 1
           print(f"L'utulisation d'un Antidote permet à {self.nom} de guérir de som empoisonnement")
 
-       if self.liste_items[res - 1].nom == "Anti-brulure" and self.liste_items[res - 1].quantite > 0 and "burn" in self.effet:
+        if self.liste_items[res - 1].nom == "Anti-brulure" and self.liste_items[res - 1].quantite > 0 and "burn" in self.effet:
           self.effet.remove("burn")
           self.nom = self.nom.replace("(brulé)", "")
           self.liste_items[res - 1].quantite -= 1
           self.attaque = self.attaque * 2
           print(f"L'utulisation d'un Anti-brulure permet à {self.nom} de guérir de sa brulure")
 
-       if self.liste_items[res - 1].nom == "Reveil" and self.liste_items[res - 1].quantite > 0 and "sommeil" in self.effet:
+        if self.liste_items[res - 1].nom == "Reveil" and self.liste_items[res - 1].quantite > 0 and "sommeil" in self.effet:
           self.effet.remove("sommeil")
           self.nom = self.nom.replace("(ZzzzZ)", "")
           self.liste_items[res - 1].quantite -= 1
           print(f"L'utulisation d'un réveil permet à {self.nom} de se reveiller")
 
-       if self.liste_items[res - 1].nom == "Anti-Para" and self.liste_items[res - 1].quantite > 0 and "paralysie" in self.effet:
+        if self.liste_items[res - 1].nom == "Anti-Para" and self.liste_items[res - 1].quantite > 0 and "paralysie" in self.effet:
           self.effet.remove("paralysie")
           self.nom = self.nom.replace("(paralysé)", "")
           self.liste_items[res - 1].quantite -= 1

@@ -10,5 +10,9 @@ Bulbizarre = Dic_pokemons["Bulbizarre"]
 Pikachu = Dic_pokemons["Pikachu"]
 Tarsal = Dic_pokemons["Tarsal"]
 
-partie = lancement(Pikachu, Tarsal)
-partie.lancement_combat()
+equipe1 = [Pikachu,Salameche]
+equipe2 = [Tarsal,Bulbizarre]
+
+if __name__ == "__main__":
+  partie = lancement(equipe1,equipe2)
+  partie.lancement_combat() 

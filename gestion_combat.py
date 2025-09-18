@@ -1,11 +1,16 @@
 import random
+from items import Items , Dic_items
 
 #Classe qui s'occupe de la gestion du combat #
 
 class lancement():
     def __init__(self,pokemon1,pokemon2):
-        self.pokemon1 = pokemon1
-        self.pokemon2 = pokemon2
+        self.pokemon1 = pokemon1[0]
+        self.pokemon2 = pokemon2[0]
+        self.inventaire1 = [] 
+        self.inventaire2 = [] 
+        self.equipe1 = pokemon1
+        self.equipe2 = pokemon2
 
    #Méthode qui permet de lancer le combat #
 
@@ -15,19 +20,29 @@ class lancement():
         mode = self.choix_mode_jeu() #0 correspond à du joueur contre joueur et 1 du joueur contre bot#
         items = self.choix_items()
         if mode == 0:
-           self.pokemon1.remise_niveau()
-           self.pokemon2.remise_niveau()
+           for i in range(len(self.equipe1)):
+            self.equipe1[i].remise_niveau()
+           for i in range(len(self.equipe2)):
+            self.equipe2[i].remise_niveau()
            if items == True: 
-            self.pokemon1.Inventaires(self.pokemon2)
+            self.initialiser_inventaires()
            while self.pokemon1.PV > 0 or self.pokemon2.PV > 0:
              if rounds == 1:
               print(f">>>>>>>>>> début du round {rounds} <<<<<<<<<<<")
              print(f"Dresseur de {self.pokemon1.nom} que voulez vous faire ?")
              joueur = self.pokemon1
-             res_pokemon1 = self.pokemon1.afficher_menu(joueur)
+             res_pokemon1 = self.pokemon1.afficher_menu(joueur,1)
+             if res_pokemon1 == "changer":
+               self.changer_pokemon(1)
+             if res_pokemon1 == "items":
+               self.utulisation_item(1)
              print(f"Dresseur de {self.pokemon2.nom} que voulez vous faire ?")
              joueur = self.pokemon2
-             res_pokemon2 = self.pokemon2.afficher_menu(joueur) 
+             res_pokemon2 = self.pokemon2.afficher_menu(joueur,2)
+             if res_pokemon2 == "changer":
+              self.changer_pokemon(2)
+             if res_pokemon2 == "items":
+               self.utulisation_item(2)
              premier = self.joue_en_premier(res_pokemon1,res_pokemon2)
              second = self.joue_en_second(premier)
              self.applications_statut(premier,second,rounds)
@@ -175,5 +190,147 @@ class lancement():
              tuple[i].nom = tuple[i].nom.replace("(confus)", "")
 
                    #Les effets de la paralysie et du sommeil sont pris en compte dans miss()
+                   
+    def changer_pokemon(self, equipe):
+     if equipe == 1:
+        print("Pokémons disponibles équipe 1 :")
+        for i, p in enumerate(self.equipe1, 1):
+            etat = "KO" if p.PV <= 0 else f"{p.PV} PV"
+            actif = "(actif)" if p == self.pokemon1 else ""
+            print(f"{i}. {p.nom} - {etat} {actif}")
+        choix = int(input("Choix : "))
+        if 1 <= choix <= len(self.equipe1):
+            nouveau = self.equipe1[choix - 1]
+            if nouveau.PV > 0 and nouveau != self.pokemon1:
+                self.pokemon1 = nouveau
+                print(f"Vous envoyez {nouveau.nom} au combat !")
+            else:
+                print("Choix invalide (KO ou déjà actif)")
+     elif equipe == 2:
+        print("Pokémons disponibles équipe 2 :")
+        for i, p in enumerate(self.equipe2, 1):
+            etat = "KO" if p.PV <= 0 else f"{p.PV} PV"
+            actif = "(actif)" if p == self.pokemon2 else ""
+            print(f"{i}. {p.nom} - {etat} {actif}")
+        choix = int(input("Choix : "))
+        if 1 <= choix <= len(self.equipe2):
+            nouveau = self.equipe2[choix - 1]
+            if nouveau.PV > 0 and nouveau != self.pokemon2:
+                self.pokemon2 = nouveau
+                print(f"Vous envoyez {nouveau.nom} au combat !")
+            else:
+                print("Choix invalide (KO ou déjà actif)")
+
+    def initialiser_inventaires(self):
+     self.inventaire1 = []
+     self.inventaire2 = []
+
+     for nom, item in Dic_items.items():
+        quantite = input(f"Quelle quantité voulez-vous attribuer à l'objet : {item.nom} ? (Pour les 2 équipes)\n> ")
+
+        while not quantite.isdigit():
+            print("Entrée invalide. Veuillez entrer un nombre entier positif ou nul.")
+            quantite = input(f"Quelle quantité voulez-vous attribuer à l'objet : {item.nom} ? (Pour les 2 équipes)\n> ")
+
+        quantite = int(quantite)
+
+        # Copier l’objet pour chaque équipe avec la bonne quantité
+        item1 = item.copier_items()
+        item1.quantite = quantite
+        self.inventaire1.append(item1)
+
+        item2 = item.copier_items()
+        item2.quantite = quantite
+        self.inventaire2.append(item2)
+      
+    def utulisation_item(self,equipe):
+       inventaire = self.inventaire1 if equipe == 1 else self.inventaire2
+       for i, items in enumerate(inventaire, 1):
+            print(f"{i}. {items.nom}: PV: {items.PV_item},PP: {items.PP_item}, quantité: {items.quantite},description: {items.description}")
+       res = input()
+       if res.isdigit() and 0 < int(res) < len(inventaire):
+        choix = int(res) - 1
+        item = inventaire[choix]
+        if item.nom == "Potion" and item.quantite > 0:
+          if item.PV_item + self.PV  > self.stats_originales[1]:
+             self.PV = self.stats_originales[1]
+          else:
+           self.PV += 20
+          item.quantite -= 1
+          print(f"L'utulisation d'une potion permet à {self.nom} de regagner 20 PV , {self.nom} est désormais à {self.PV} PV")
+
+        if item.nom == "Hyper-potion" and item.quantite > 0:
+          if item.PV_item + self.PV  > self.stats_originales[1]:
+             self.PV = self.stats_originales[1]
+          else:
+           self.PV += 200
+          item.quantite -= 1
+          print(f"L'utulisation d'une Hyper-potion permet à {self.nom} de regagner 200 PV , {self.nom} est désormais à {self.PV} PV")
+
+        if item.nom == "Super-Potion" and item.quantite > 0:
+          if item.PV_item + self.PV  > self.stats_originales[1]:
+             self.PV = self.stats_originales[1]
+          else:
+           self.PV += 50
+          item.quantite -= 1
+          print(f"L'utulisation d'une Super-potion permet à {self.nom} de regagner 50 PV , {self.nom} est désormais à {self.PV} PV")
+
+        if item.nom == "Guerison" and item.quantite > 0:
+          self.PV = self.stats_originales[1]
+          item.quantite -= 1
+          for effet in self.effet[:]:  # copie de la liste
+           if effet == "burn":
+            self.attaque *= 2
+           elif effet == "paralysie":
+            self.vitesse *= 4
+            self.effet.remove(effet)
+          self.nom = self.stats_originales[0]
+          print(f"L'utulisation d'un objet de guérison permet à {self.nom} de regagner l'entiereté de ses PV et de supprimer ses effets de statut")
+
+        if item.nom == "Potion-max" and item.quantite > 0:
+          self.PV = self.stats_originales[1]
+          item.quantite -= 1
+          print(f"L'utulisation d'une potion max permet à {self.nom} de regagner l'entiereté de ses PV")
+
+        if item.nom == "Total-soin" and item.quantite > 0:
+          item.quantite -= 1
+          for effet in self.effet[:]:  # copie de la liste
+           if effet == "burn":
+            self.attaque *= 2
+           elif effet == "paralysie":
+            self.vitesse *= 4
+            self.effet.remove(effet)
+          self.nom = self.stats_originales[0]
+          print(f"L'utulisation d'un total-soin permet à {self.nom} de guérir de tous ses effets de statut")
+
+        if item.nom == "Antidote" and item.quantite > 0 and "poison" in self.effet:
+          self.effet.remove("poison")
+          self.nom = self.nom.replace("(empoisonné)", "")
+          item.quantite -= 1
+          print(f"L'utulisation d'un Antidote permet à {self.nom} de guérir de som empoisonnement")
+
+        if item.nom == "Anti-brulure" and item.quantite > 0 and "burn" in self.effet:
+          self.effet.remove("burn")
+          self.nom = self.nom.replace("(brulé)", "")
+          item.quantite -= 1
+          self.attaque = self.attaque * 2
+          print(f"L'utulisation d'un Anti-brulure permet à {self.nom} de guérir de sa brulure")
+
+        if item.nom == "Reveil" and item.quantite > 0 and "sommeil" in self.effet:
+          self.effet.remove("sommeil")
+          self.nom = self.nom.replace("(ZzzzZ)", "")
+          item.quantite -= 1
+          print(f"L'utulisation d'un réveil permet à {self.nom} de se reveiller")
+
+        if item.nom == "Anti-Para" and item.quantite > 0 and "paralysie" in self.effet:
+          self.effet.remove("paralysie")
+          self.nom = self.nom.replace("(paralysé)", "")
+          item.quantite -= 1
+          self.vitesse = self.vitesse * 4
+          print(f"L'utulisation d'un Anti-Para permet à {self.nom} de guérir sa paralysie")
+
+      
+
+    
 
 

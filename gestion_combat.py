@@ -1,6 +1,7 @@
 import random
 from items import Items , Dic_items
 
+
 #Classe qui s'occupe de la gestion du combat #
 
 class lancement():
@@ -30,19 +31,25 @@ class lancement():
              if rounds == 1:
               print(f">>>>>>>>>> début du round {rounds} <<<<<<<<<<<")
              print(f"Dresseur de {self.pokemon1.nom} que voulez vous faire ?")
-             joueur = self.pokemon1
-             res_pokemon1 = self.pokemon1.afficher_menu(joueur,1)
-             if res_pokemon1 == "changer":
-               self.changer_pokemon(1)
-             if res_pokemon1 == "items":
-               self.utulisation_item(1)
+             while True:
+              res_pokemon1 = self.pokemon1.afficher_menu(self.pokemon1, 1)
+              if res_pokemon1 == "changer":
+                self.changer_pokemon(1)
+                continue
+              if res_pokemon1 == "items":
+                self.utulisation_item(1)
+                continue
+              break  # ici res_pokemon1 est forcément une attaque valide (int)
              print(f"Dresseur de {self.pokemon2.nom} que voulez vous faire ?")
-             joueur = self.pokemon2
-             res_pokemon2 = self.pokemon2.afficher_menu(joueur,2)
-             if res_pokemon2 == "changer":
-              self.changer_pokemon(2)
-             if res_pokemon2 == "items":
-               self.utulisation_item(2)
+             while True:
+              res_pokemon2 = self.pokemon2.afficher_menu(self.pokemon2, 1)
+              if res_pokemon2 == "changer":
+                self.changer_pokemon(1)
+                continue
+              if res_pokemon2 == "items":
+                self.utulisation_item(1)
+                continue
+              break  # ici res_pokemon1 est forcément une attaque valide (int)
              premier = self.joue_en_premier(res_pokemon1,res_pokemon2)
              second = self.joue_en_second(premier)
              self.applications_statut(premier,second,rounds)
@@ -234,7 +241,6 @@ class lancement():
 
         quantite = int(quantite)
 
-        # Copier l’objet pour chaque équipe avec la bonne quantité
         item1 = item.copier_items()
         item1.quantite = quantite
         self.inventaire1.append(item1)
@@ -245,89 +251,94 @@ class lancement():
       
     def utulisation_item(self,equipe):
        inventaire = self.inventaire1 if equipe == 1 else self.inventaire2
+       if inventaire == self.inventaire1:
+         pokemon = self.pokemon1
+       else:
+         pokemon = self.pokemon2
+
        for i, items in enumerate(inventaire, 1):
             print(f"{i}. {items.nom}: PV: {items.PV_item},PP: {items.PP_item}, quantité: {items.quantite},description: {items.description}")
        res = input()
-       if res.isdigit() and 0 < int(res) < len(inventaire):
+       if res.isdigit() and 0 < int(res) <= len(inventaire):
         choix = int(res) - 1
-        item = inventaire[choix]
+        item = inventaire[choix] 
         if item.nom == "Potion" and item.quantite > 0:
-          if item.PV_item + self.PV  > self.stats_originales[1]:
-             self.PV = self.stats_originales[1]
+          if item.PV_item + pokemon.PV  > pokemon.stats_originales[1]:
+             pokemon.PV = pokemon.stats_originales[1]
           else:
-           self.PV += 20
+           pokemon.PV += 20
           item.quantite -= 1
-          print(f"L'utulisation d'une potion permet à {self.nom} de regagner 20 PV , {self.nom} est désormais à {self.PV} PV")
+          print(f"L'utulisation d'une potion permet à {pokemon.nom} de regagner 20 PV , {pokemon.nom} est désormais à {pokemon.PV} PV")
 
         if item.nom == "Hyper-potion" and item.quantite > 0:
-          if item.PV_item + self.PV  > self.stats_originales[1]:
-             self.PV = self.stats_originales[1]
+          if item.PV_item + pokemon.PV  > pokemon.stats_originales[1]:
+             pokemon.PV = pokemon.stats_originales[1]
           else:
-           self.PV += 200
+           pokemon.PV += 200
           item.quantite -= 1
-          print(f"L'utulisation d'une Hyper-potion permet à {self.nom} de regagner 200 PV , {self.nom} est désormais à {self.PV} PV")
+          print(f"L'utulisation d'une Hyper-potion permet à {pokemon.nom} de regagner 200 PV , {pokemon.nom} est désormais à {pokemon.PV} PV")
 
-        if item.nom == "Super-Potion" and item.quantite > 0:
-          if item.PV_item + self.PV  > self.stats_originales[1]:
-             self.PV = self.stats_originales[1]
+        if item.nom == "Super-potion" and item.quantite > 0:
+          if item.PV_item + pokemon.PV  > pokemon.stats_originales[1]:
+             pokemon.PV = pokemon.stats_originales[1]
           else:
-           self.PV += 50
+           pokemon.PV += 50
           item.quantite -= 1
-          print(f"L'utulisation d'une Super-potion permet à {self.nom} de regagner 50 PV , {self.nom} est désormais à {self.PV} PV")
+          print(f"L'utulisation d'une Super-potion permet à {pokemon.nom} de regagner 50 PV , {pokemon.nom} est désormais à {pokemon.PV} PV")
 
         if item.nom == "Guerison" and item.quantite > 0:
-          self.PV = self.stats_originales[1]
+          pokemon.PV = pokemon.stats_originales[1]
           item.quantite -= 1
-          for effet in self.effet[:]:  # copie de la liste
+          for effet in pokemon.effet[:]:  # copie de la liste
            if effet == "burn":
-            self.attaque *= 2
+            pokemon.attaque *= 2
            elif effet == "paralysie":
-            self.vitesse *= 4
-            self.effet.remove(effet)
-          self.nom = self.stats_originales[0]
-          print(f"L'utulisation d'un objet de guérison permet à {self.nom} de regagner l'entiereté de ses PV et de supprimer ses effets de statut")
+            pokemon.vitesse *= 4
+            pokemon.effet.remove(effet)
+          pokemon.nom = pokemon.stats_originales[0]
+          print(f"L'utulisation d'un objet de guérison permet à {pokemon.nom} de regagner l'entiereté de ses PV et de supprimer ses effets de statut")
 
         if item.nom == "Potion-max" and item.quantite > 0:
-          self.PV = self.stats_originales[1]
+          pokemon.PV = pokemon.stats_originales[1]
           item.quantite -= 1
-          print(f"L'utulisation d'une potion max permet à {self.nom} de regagner l'entiereté de ses PV")
+          print(f"L'utulisation d'une potion max permet à {pokemon.nom} de regagner l'entiereté de ses PV")
 
         if item.nom == "Total-soin" and item.quantite > 0:
           item.quantite -= 1
-          for effet in self.effet[:]:  # copie de la liste
+          for effet in pokemon.effet[:]:  # copie de la liste
            if effet == "burn":
-            self.attaque *= 2
+            pokemon.attaque *= 2
            elif effet == "paralysie":
-            self.vitesse *= 4
-            self.effet.remove(effet)
-          self.nom = self.stats_originales[0]
-          print(f"L'utulisation d'un total-soin permet à {self.nom} de guérir de tous ses effets de statut")
+            pokemon.vitesse *= 4
+            pokemon.effet.remove(effet)
+          pokemon.nom = pokemon.stats_originales[0]
+          print(f"L'utulisation d'un total-soin permet à {pokemon.nom} de guérir de tous ses effets de statut")
 
-        if item.nom == "Antidote" and item.quantite > 0 and "poison" in self.effet:
-          self.effet.remove("poison")
-          self.nom = self.nom.replace("(empoisonné)", "")
+        if item.nom == "Antidote" and item.quantite > 0 and "poison" in pokemon.effet:
+          pokemon.effet.remove("poison")
+          pokemon.nom = pokemon.nom.replace("(empoisonné)", "")
           item.quantite -= 1
-          print(f"L'utulisation d'un Antidote permet à {self.nom} de guérir de som empoisonnement")
+          print(f"L'utulisation d'un Antidote permet à {pokemon.nom} de guérir de som empoisonnement")
 
-        if item.nom == "Anti-brulure" and item.quantite > 0 and "burn" in self.effet:
-          self.effet.remove("burn")
-          self.nom = self.nom.replace("(brulé)", "")
+        if item.nom == "Anti-brulure" and item.quantite > 0 and "burn" in pokemon.effet:
+          pokemon.effet.remove("burn")
+          pokemon.nom = pokemon.nom.replace("(brulé)", "")
           item.quantite -= 1
-          self.attaque = self.attaque * 2
-          print(f"L'utulisation d'un Anti-brulure permet à {self.nom} de guérir de sa brulure")
+          pokemon.attaque = pokemon.attaque * 2
+          print(f"L'utulisation d'un Anti-brulure permet à {pokemon.nom} de guérir de sa brulure")
 
-        if item.nom == "Reveil" and item.quantite > 0 and "sommeil" in self.effet:
-          self.effet.remove("sommeil")
-          self.nom = self.nom.replace("(ZzzzZ)", "")
+        if item.nom == "Reveil" and item.quantite > 0 and "sommeil" in pokemon.effet:
+          pokemon.effet.remove("sommeil")
+          pokemon.nom = pokemon.nom.replace("(ZzzzZ)", "")
           item.quantite -= 1
-          print(f"L'utulisation d'un réveil permet à {self.nom} de se reveiller")
+          print(f"L'utulisation d'un réveil permet à {pokemon.nom} de se reveiller")
 
-        if item.nom == "Anti-Para" and item.quantite > 0 and "paralysie" in self.effet:
-          self.effet.remove("paralysie")
-          self.nom = self.nom.replace("(paralysé)", "")
+        if item.nom == "Anti-Para" and item.quantite > 0 and "paralysie" in pokemon.effet:
+          pokemon.effet.remove("paralysie")
+          pokemon.nom = pokemon.nom.replace("(paralysé)", "")
           item.quantite -= 1
-          self.vitesse = self.vitesse * 4
-          print(f"L'utulisation d'un Anti-Para permet à {self.nom} de guérir sa paralysie")
+          pokemon.vitesse = pokemon.vitesse * 4
+          print(f"L'utulisation d'un Anti-Para permet à {pokemon.nom} de guérir sa paralysie")
 
       
 

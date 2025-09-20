@@ -27,9 +27,13 @@ class lancement():
             self.equipe2[i].remise_niveau()
            if items == True: 
             self.initialiser_inventaires()
-           while self.pokemon1.PV > 0 or self.pokemon2.PV > 0:
+           while any(p.PV > 0 for p in self.equipe1) or any(p.PV > 0 for p in self.equipe2):
              if rounds == 1:
               print(f">>>>>>>>>> début du round {rounds} <<<<<<<<<<<")
+             retour_gagnant = self.verif_gagnant()
+             if retour_gagnant == 1 or retour_gagnant == 2:
+                 break
+             self.verif_mort(self.pokemon1,self.pokemon2)
              print(f"Dresseur de {self.pokemon1.nom} que voulez vous faire ?")
              while True:
               res_pokemon1 = self.pokemon1.afficher_menu(self.pokemon1, 1)
@@ -58,82 +62,63 @@ class lancement():
               premier.degats(second,res_pokemon1,rounds)
              else:
               premier.degats(second,res_pokemon2,rounds)
-             if second.PV <= 0:  
-                print(f"{second.nom} a été vaincu!")
-                break
              print(f">>>>>>>>>> Au tour de {second.nom} <<<<<<<<<<")
              if self.pokemon1 == second:
                second.degats(premier,res_pokemon1,rounds) 
              else:
                 second.degats(premier,res_pokemon2,rounds)
-             if premier.PV <= 0:  
-                print(f"{premier.nom} a été vaincu!")
-                break
              rounds += 1
              print(f" >>>>>>>>>> début du round {rounds} <<<<<<<<<<<")
         if mode == 1:
            joueur = self.choix_pokemon_bot()
            if joueur == self.pokemon1:
               bot = self.pokemon2
+              bot.mode = 1
            else:
               bot = self.pokemon1
-           
-           # Remise à niveau pour toutes les équipes
+              bot.mode = 1
            for i in range(len(self.equipe1)):
                self.equipe1[i].remise_niveau()
            for i in range(len(self.equipe2)):
                self.equipe2[i].remise_niveau()
-           
            if items == True: 
-               self.initialiser_inventaires()  # Utiliser la méthode correcte
-           
-           while joueur.PV > 0 and bot.PV > 0:  # Correction de la condition
+               self.initialiser_inventaires()  
+           while any(p.PV > 0 for p in self.equipe1) or any(p.PV > 0 for p in self.equipe2): 
              if rounds == 1:
                  print(f">>>>>>>>>> début du round {rounds} <<<<<<<<<<<")
-             
+             retour_gagnant = self.verif_gagnant()
+             if retour_gagnant == 1 or retour_gagnant == 2:
+                 break
+             self.verif_mort(joueur,bot)
+             joueur = self.pokemon1 if joueur in self.equipe1 else self.pokemon2 # On réadapte le joueur pour que le changement de pokémon soit bien pris en compte"
+             bot = self.pokemon1 if bot in self.equipe1 else self.pokemon2 # Meme chose que pour le joueur#
              print(f"Dresseur de {joueur.nom} que voulez vous faire ?")
              while True:
-                 res_joueur = joueur.afficher_menu(joueur, 1)  # Ajout du paramètre equipe
+                 res_joueur = joueur.afficher_menu(joueur, 1)  
                  if res_joueur == "changer":
-                     # Déterminer quelle équipe correspond au joueur
                      equipe_joueur = 1 if joueur in self.equipe1 else 2
                      self.changer_pokemon(equipe_joueur)
-                     # Mettre à jour la référence joueur après changement
                      joueur = self.pokemon1 if equipe_joueur == 1 else self.pokemon2
                      continue
                  if res_joueur == "items":
                      equipe_joueur = 1 if joueur in self.equipe1 else 2
                      self.utulisation_item(equipe_joueur)
                      continue
-                 break  # res_joueur est une attaque valide
-             
-             # Le bot choisit une attaque aléatoirement
+                 break  
              res_bot = random.randint(1, len(bot.liste_attaques))
-             
              premier = self.joue_en_premier(res_joueur, res_bot)
              second = self.joue_en_second(premier)
              self.applications_statut(premier, second, rounds)
-             
              print(f">>>>>>>>>> {premier.nom} commence <<<<<<<<<<<")
              if premier == joueur:
                  premier.degats(second, res_joueur, rounds)
              else:
                  premier.degats(second, res_bot, rounds)
-             
-             if second.PV <= 0:  
-                 print(f"{second.nom} a été vaincu!")
-                 break
-             
              print(f">>>>>>>>>> Au tour de {second.nom} <<<<<<<<<<<")
              if second == joueur:
                  second.degats(premier, res_joueur, rounds) 
              else:
                  second.degats(premier, res_bot, rounds)
-             
-             if premier.PV <= 0:  
-                 print(f"{premier.nom} a été vaincu!")
-                 break
-             
              rounds += 1
              print(f">>>>>>>>>> début du round {rounds} <<<<<<<<<<<")
                  
@@ -203,11 +188,11 @@ class lancement():
        for i in range(len(tuple)):
         for j in range(len(tuple[i].effet)):
          if tuple[i].effet[j] == "burn":
-          tuple[i].PV -= (tuple[i].PV // 8)
-          print(f"{tuple[i].nom} subit les effets de ses brulures et perd {tuple[i].PV // 8} PV, il est désormais à {tuple[i].PV}")
+          tuple[i].PV -= (tuple[i].stats_originales[1] // 8)
+          print(f"{tuple[i].nom} subit les effets de ses brulures et perd {tuple[i].stats_originales[1] // 8} PV, il est désormais à {tuple[i].PV}")
          if tuple[i].effet[j] == "poison":
-          tuple[i].PV -= (tuple[i].PV // 8)
-          print(f"{tuple[i].nom} subit les effets de l'empoisonnement et perd {tuple[i].PV // 8} PV, il est désormais à {tuple[i].PV}")
+          tuple[i].PV -= (tuple[i].stats_originales[1] // 8)
+          print(f"{tuple[i].nom} subit les effets de l'empoisonnement et perd {tuple[i].stats_originales[1] // 8} PV, il est désormais à {tuple[i].PV}")
          if tuple[i].effet[j] == "confusion":
           if tuple[i].effet_round_confusion == None:
              tuple[i].effet_round_confusion = rounds
@@ -230,33 +215,77 @@ class lancement():
                    
     def changer_pokemon(self, equipe):
      if equipe == 1:
+        if self.pokemon1.mode == 1: # si c'est un bot"
+            for p in self.equipe1:
+                if p.PV > 0 and p != self.pokemon1:
+                    self.pokemon1 = p
+                    print(f"Le bot envoie {p.nom} au combat !")
+                    return
         print("Pokémons disponibles équipe 1 :")
         for i, p in enumerate(self.equipe1, 1):
             etat = "KO" if p.PV <= 0 else f"{p.PV} PV"
             actif = "(actif)" if p == self.pokemon1 else ""
             print(f"{i}. {p.nom} - {etat} {actif}")
-        choix = int(input("Choix : "))
-        if 1 <= choix <= len(self.equipe1):
+
+        while True:
+          choix = input("Choix : ")
+          if choix.isdigit():
+           choix = int(choix)
+           if 1 <= choix <= len(self.equipe1):
             nouveau = self.equipe1[choix - 1]
             if nouveau.PV > 0 and nouveau != self.pokemon1:
                 self.pokemon1 = nouveau
                 print(f"Vous envoyez {nouveau.nom} au combat !")
+                break
             else:
-                print("Choix invalide (KO ou déjà actif)")
+                if nouveau.PV <= 0:
+                    print("Ce Pokémon est KO, choisissez-en un autre.")
+                    continue
+                else:
+                    print("Ce Pokémon est déjà actif dans l'équipe.")
+                    continue
+           else:
+            print("Choix invalide. Veuillez entrer un numéro valide.")
+            continue
+          else:
+            print("Veuillez entrer un nombre entier valide.")
+            continue
+
      elif equipe == 2:
-        print("Pokémons disponibles équipe 2 :")
+        if self.pokemon2.mode == 1: # si c'est un bot"
+          for p in self.equipe2:
+               if p.PV > 0 and p != self.pokemon2:
+                  self.pokemon2 = p
+                  print(f"Le bot envoie {p.nom} au combat !")
+                  return
+        print("Pokémons disponibles équipe 1 :")
         for i, p in enumerate(self.equipe2, 1):
             etat = "KO" if p.PV <= 0 else f"{p.PV} PV"
             actif = "(actif)" if p == self.pokemon2 else ""
             print(f"{i}. {p.nom} - {etat} {actif}")
-        choix = int(input("Choix : "))
-        if 1 <= choix <= len(self.equipe2):
+        while True:
+          choix = input("Choix : ")
+          if choix.isdigit():
+           choix = int(choix)
+           if 1 <= choix <= len(self.equipe2):
             nouveau = self.equipe2[choix - 1]
             if nouveau.PV > 0 and nouveau != self.pokemon2:
                 self.pokemon2 = nouveau
                 print(f"Vous envoyez {nouveau.nom} au combat !")
+                break
             else:
-                print("Choix invalide (KO ou déjà actif)")
+                if nouveau.PV <= 0:
+                    print("Ce Pokémon est KO, choisissez-en un autre.")
+                    continue
+                else:
+                    print("Ce Pokémon est déjà actif dans l'équipe.")
+                    continue
+           else:
+            print("Choix invalide. Veuillez entrer un numéro valide.")
+            continue
+          else:
+            print("Veuillez entrer un nombre entier valide.")
+            continue
 
     def initialiser_inventaires(self):
      self.inventaire1 = []
@@ -369,6 +398,27 @@ class lancement():
           item.quantite -= 1
           pokemon.vitesse = pokemon.vitesse * 4
           print(f"L'utulisation d'un Anti-Para permet à {pokemon.nom} de guérir sa paralysie")
+
+    def verif_mort(self,pokemon1,pokemon2):
+       if pokemon1.PV == 0:
+          print(f"{pokemon1.nom} est KO , changement de pokémon")
+          self.changer_pokemon(1)
+       elif pokemon2.PV == 0:
+          print(f"{pokemon2.nom} est KO , changement de pokémon")
+          self.changer_pokemon(2)
+
+    def verif_gagnant(self):
+      equipe1_KO = all(p.PV <= 0 for p in self.equipe1)
+      equipe2_KO = all(p.PV <= 0 for p in self.equipe2)
+
+      if equipe1_KO:
+        print("Tous les Pokémon de l'équipe 1 sont KO. Équipe 2 a gagné !")
+        return 2
+      elif equipe2_KO:
+        print("Tous les Pokémon de l'équipe 2 sont KO. Équipe 1 a gagné !")
+        return 1
+      else:
+        return 0  
 
       
 

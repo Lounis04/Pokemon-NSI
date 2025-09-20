@@ -49,6 +49,7 @@ class pokemon():
         self.effet_round_sommeil = None
         self.confusion_duree = None
         self.sommeil_duree = None
+        self.mode = 0 #Si c'est un joueur ou un bot#
 
     #méthode qui affiche le menu spécfique au pokemon qui joue #
 
@@ -74,11 +75,17 @@ class pokemon():
           for i, attaque in enumerate(self.liste_attaques, 1):
             print(f"{i}. {attaque.nom} (Puissance: {attaque.puissance}, PP: {attaque.pp})")
           if self == joueur: #si c'est le joueur qui attaque ou bien c'est un combat entre joueurs#
-               retour = int(input())
-          while retour > 4 or retour < 1:
-             print("Valeur possible depassé veuillez réessayer")
-             retour = int(input())
-          return retour
+               retour = input()
+               if retour.isdigit():
+                  retour = int(retour)
+                  if retour <= 4 and retour >= 1:
+                     return retour
+                  else:
+                   print("Choix invalide : Veuillez respecter les consignes")
+                   continue
+               else:
+                  print("Choix invalide : Veuillez respecter les consignes")
+                  continue
          else:
             continue
          
@@ -275,86 +282,6 @@ class pokemon():
            self.defense_spe = self.stats_originales[5] * dic_niveaux[self.stages_stats["Defense_spe"]]
            print(f"La défense spéciale et l'attaque spéciale de {self.nom} ont augmentés d'1 niveau")
            
-    def utulisation_item(self,res,equipe):
-       inventaire = self.inventaire1 if equipe == 1 else self.inventaire2
-       for item in inventaire:
-        if self.liste_items[res - 1].nom == "Potion" and self.liste_items[res - 1].quantite > 0:
-          if self.liste_items[res - 1].PV_item + self.PV  > self.stats_originales[1]:
-             self.PV = self.stats_originales[1]
-          else:
-           self.PV += 20
-          self.liste_items[res - 1].quantite -= 1
-          print(f"L'utulisation d'une potion permet à {self.nom} de regagner 20 PV , {self.nom} est désormais à {self.PV} PV")
-
-        if self.liste_items[res - 1].nom == "Hyper-potion" and self.liste_items[res - 1].quantite > 0:
-          if self.liste_items[res - 1].PV_item + self.PV  > self.stats_originales[1]:
-             self.PV = self.stats_originales[1]
-          else:
-           self.PV += 200
-          self.liste_items[res - 1].quantite -= 1
-          print(f"L'utulisation d'une Hyper-potion permet à {self.nom} de regagner 200 PV , {self.nom} est désormais à {self.PV} PV")
-
-        if self.liste_items[res - 1].nom == "Super-Potion" and self.liste_items[res - 1].quantite > 0:
-          if self.liste_items[res - 1].PV_item + self.PV  > self.stats_originales[1]:
-             self.PV = self.stats_originales[1]
-          else:
-           self.PV += 50
-          self.liste_items[res - 1].quantite -= 1
-          print(f"L'utulisation d'une Super-potion permet à {self.nom} de regagner 50 PV , {self.nom} est désormais à {self.PV} PV")
-
-        if self.liste_items[res - 1].nom == "Guerison" and self.liste_items[res - 1].quantite > 0:
-          self.PV = self.stats_originales[1]
-          self.liste_items[res - 1].quantite -= 1
-          for effet in self.effet[:]:  # copie de la liste
-           if effet == "burn":
-            self.attaque *= 2
-           elif effet == "paralysie":
-            self.vitesse *= 4
-            self.effet.remove(effet)
-          self.nom = self.stats_originales[0]
-          print(f"L'utulisation d'un objet de guérison permet à {self.nom} de regagner l'entiereté de ses PV et de supprimer ses effets de statut")
-
-        if self.liste_items[res - 1].nom == "Potion-max" and self.liste_items[res - 1].quantite > 0:
-          self.PV = self.stats_originales[1]
-          self.liste_items[res - 1].quantite -= 1
-          print(f"L'utulisation d'une potion max permet à {self.nom} de regagner l'entiereté de ses PV")
-
-        if self.liste_items[res - 1].nom == "Total-soin" and self.liste_items[res - 1].quantite > 0:
-          self.liste_items[res - 1].quantite -= 1
-          for effet in self.effet[:]:  # copie de la liste
-           if effet == "burn":
-            self.attaque *= 2
-           elif effet == "paralysie":
-            self.vitesse *= 4
-            self.effet.remove(effet)
-          self.nom = self.stats_originales[0]
-          print(f"L'utulisation d'un total-soin permet à {self.nom} de guérir de tous ses effets de statut")
-
-        if self.liste_items[res - 1].nom == "Antidote" and self.liste_items[res - 1].quantite > 0 and "poison" in self.effet:
-          self.effet.remove("poison")
-          self.nom = self.nom.replace("(empoisonné)", "")
-          self.liste_items[res - 1].quantite -= 1
-          print(f"L'utulisation d'un Antidote permet à {self.nom} de guérir de som empoisonnement")
-
-        if self.liste_items[res - 1].nom == "Anti-brulure" and self.liste_items[res - 1].quantite > 0 and "burn" in self.effet:
-          self.effet.remove("burn")
-          self.nom = self.nom.replace("(brulé)", "")
-          self.liste_items[res - 1].quantite -= 1
-          self.attaque = self.attaque * 2
-          print(f"L'utulisation d'un Anti-brulure permet à {self.nom} de guérir de sa brulure")
-
-        if self.liste_items[res - 1].nom == "Reveil" and self.liste_items[res - 1].quantite > 0 and "sommeil" in self.effet:
-          self.effet.remove("sommeil")
-          self.nom = self.nom.replace("(ZzzzZ)", "")
-          self.liste_items[res - 1].quantite -= 1
-          print(f"L'utulisation d'un réveil permet à {self.nom} de se reveiller")
-
-        if self.liste_items[res - 1].nom == "Anti-Para" and self.liste_items[res - 1].quantite > 0 and "paralysie" in self.effet:
-          self.effet.remove("paralysie")
-          self.nom = self.nom.replace("(paralysé)", "")
-          self.liste_items[res - 1].quantite -= 1
-          self.vitesse = self.vitesse * 4
-          print(f"L'utulisation d'un Anti-Para permet à {self.nom} de guérir sa paralysie")
        
 
 #Liste des pokémons avec leurs attributs#

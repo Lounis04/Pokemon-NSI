@@ -77,35 +77,65 @@ class lancement():
               bot = self.pokemon2
            else:
               bot = self.pokemon1
-           self.pokemon1.remise_niveau()
-           self.pokemon2.remise_niveau()
+           
+           # Remise à niveau pour toutes les équipes
+           for i in range(len(self.equipe1)):
+               self.equipe1[i].remise_niveau()
+           for i in range(len(self.equipe2)):
+               self.equipe2[i].remise_niveau()
+           
            if items == True: 
-            self.pokemon1.Inventaires()
-            self.pokemon2.Inventaires()
-           while self.pokemon1.PV > 0 or self.pokemon2.PV > 0:
+               self.initialiser_inventaires()  # Utiliser la méthode correcte
+           
+           while joueur.PV > 0 and bot.PV > 0:  # Correction de la condition
+             if rounds == 1:
+                 print(f">>>>>>>>>> début du round {rounds} <<<<<<<<<<<")
+             
              print(f"Dresseur de {joueur.nom} que voulez vous faire ?")
-             res_joueur = joueur.afficher_menu(joueur)
-             res_bot = bot.afficher_menu(joueur)
-             premier = self.joue_en_premier(res_joueur,res_bot)
+             while True:
+                 res_joueur = joueur.afficher_menu(joueur, 1)  # Ajout du paramètre equipe
+                 if res_joueur == "changer":
+                     # Déterminer quelle équipe correspond au joueur
+                     equipe_joueur = 1 if joueur in self.equipe1 else 2
+                     self.changer_pokemon(equipe_joueur)
+                     # Mettre à jour la référence joueur après changement
+                     joueur = self.pokemon1 if equipe_joueur == 1 else self.pokemon2
+                     continue
+                 if res_joueur == "items":
+                     equipe_joueur = 1 if joueur in self.equipe1 else 2
+                     self.utulisation_item(equipe_joueur)
+                     continue
+                 break  # res_joueur est une attaque valide
+             
+             # Le bot choisit une attaque aléatoirement
+             res_bot = random.randint(1, len(bot.liste_attaques))
+             
+             premier = self.joue_en_premier(res_joueur, res_bot)
              second = self.joue_en_second(premier)
-             self.applications_statut(premier,second,rounds)
-             print(f">>>>>>>>>>>>> début du round {rounds}, {premier.nom} commence <<<<<<<<<<<")
-             if joueur == premier:
-              premier.degats(second,res_joueur,rounds)
+             self.applications_statut(premier, second, rounds)
+             
+             print(f">>>>>>>>>> {premier.nom} commence <<<<<<<<<<<")
+             if premier == joueur:
+                 premier.degats(second, res_joueur, rounds)
              else:
-              premier.degats(second,res_bot,rounds)
+                 premier.degats(second, res_bot, rounds)
+             
              if second.PV <= 0:  
-                print(f"{second.nom} a été vaincu!")
-                break
-             print(f">>>>>>>>>> Au tour de {second.nom} <<<<<<<<<<")
-             if joueur == second:
-               second.degats(premier,res_joueur,rounds) 
+                 print(f"{second.nom} a été vaincu!")
+                 break
+             
+             print(f">>>>>>>>>> Au tour de {second.nom} <<<<<<<<<<<")
+             if second == joueur:
+                 second.degats(premier, res_joueur, rounds) 
              else:
-                second.degats(premier,res_bot,rounds)
+                 second.degats(premier, res_bot, rounds)
+             
              if premier.PV <= 0:  
-                print(f"{premier.nom} a été vaincu!")
+                 print(f"{premier.nom} a été vaincu!")
+                 break
+             
              rounds += 1
-             print(f" >>>>>>>>>> début du round {rounds} <<<<<<<<<<<")
+             print(f">>>>>>>>>> début du round {rounds} <<<<<<<<<<<")
                  
    #Méthode qui demande le choix du mode de jeu : contre un joueur ou un bot#
 

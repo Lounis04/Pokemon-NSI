@@ -16,10 +16,10 @@ class Items():
        )
 
 Potion = Items("Potion",20,0,0,"Restaure 20 PV") #La quantité de base pour un item est de 0#
-Antidote = Items("Antidote",0,0,0,"Soigne les pokémons empoisonnés")
-Anti_brule = Items("Anti-brulure",0,0,0,"Soigne les pokémons brulés")
-Reveil = Items("Reveil",0,0,0,"Réveille les pokémons endormis")
-Anti_para = Items("Anti-Para",0,0,0,"Soigne les pokémons paralysés")
+Antidote = Items("Antidote",0,0,0,"Soigne les pokémons empoisonnés(utulisable que si le pokemon a l'effet poison)")
+Anti_brule = Items("Anti-brulure",0,0,0,"Soigne les pokémons brulés(utulisable que si le pokemon a l'effet burn)")
+Reveil = Items("Reveil",0,0,0,"Réveille les pokémons endormis(utulisable que si le pokemon a l'effet sommeil")
+Anti_para = Items("Anti-Para",0,0,0,"Soigne les pokémons paralysés(utulisable que si le pokemon a l'effet paralysie)")
 Guerison = Items("Guerison","max",0,0,"Soigne entièrement les pv d'un pokémon et enleve ses effets de statut")
 Potion_max = Items("Potion-max",0,0,0,"Soigne entiérement les PV d'un pokémon")
 Hyper_potion = Items("Hyper-potion",200,0,0,"Restaure 200 PV")

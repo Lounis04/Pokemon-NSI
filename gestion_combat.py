@@ -42,12 +42,12 @@ class lancement():
               break  # ici res_pokemon1 est forcément une attaque valide (int)
              print(f"Dresseur de {self.pokemon2.nom} que voulez vous faire ?")
              while True:
-              res_pokemon2 = self.pokemon2.afficher_menu(self.pokemon2, 1)
+              res_pokemon2 = self.pokemon2.afficher_menu(self.pokemon2, 2)
               if res_pokemon2 == "changer":
-                self.changer_pokemon(1)
+                self.changer_pokemon(2)
                 continue
               if res_pokemon2 == "items":
-                self.utulisation_item(1)
+                self.utulisation_item(2)
                 continue
               break  # ici res_pokemon1 est forcément une attaque valide (int)
              premier = self.joue_en_premier(res_pokemon1,res_pokemon2)

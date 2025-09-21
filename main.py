@@ -9,9 +9,13 @@ Carapuce = Dic_pokemons["Carapuce"]
 Bulbizarre = Dic_pokemons["Bulbizarre"]
 Pikachu = Dic_pokemons["Pikachu"]
 Tarsal = Dic_pokemons["Tarsal"]
+Metang = Dic_pokemons["Metang"]
+Poussifeu = Dic_pokemons["Poussifeu"]
+Gobou = Dic_pokemons["Gobou"]
+Arcko = Dic_pokemons["Arcko"]
 
-equipe1 = [Salameche,Pikachu]
-equipe2 = [Bulbizarre,Tarsal]
+equipe1 = [Metang,Poussifeu]
+equipe2 = [Arcko,Gobou]
 
 if __name__ == "__main__":
   partie = lancement(equipe1,equipe2)

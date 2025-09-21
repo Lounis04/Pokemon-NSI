@@ -1,5 +1,5 @@
 import random
-from items import Items , Dic_items
+from items import Items , Dic_items , Dic_items_tenus
 
 
 #Classe qui s'occupe de la gestion du combat #
@@ -20,6 +20,8 @@ class lancement():
         print("combat lancé")
         mode = self.choix_mode_jeu() #0 correspond à du joueur contre joueur et 1 du joueur contre bot#
         items = self.choix_items()
+        self.objets_tenus()
+        self.utulisation_objets_tenus()
         if mode == 0:
            for i in range(len(self.equipe1)):
             self.equipe1[i].remise_niveau()
@@ -307,6 +309,21 @@ class lancement():
         item2 = item.copier_items()
         item2.quantite = quantite
         self.inventaire2.append(item2)
+
+    def utiliser_rappel(self, equipe):
+        ko_pokemons = [p for p in equipe if p.PV <= 0]
+        if not ko_pokemons:
+            print("Aucun Pokémon K.O. dans cette équipe.")
+            return
+        print("Pokémons K.O. disponibles :")
+        for i, p in enumerate(ko_pokemons, 1):
+            print(f"{i}. {p.nom}")
+        choix = input("Choisissez un Pokémon à réanimer:\n> ")
+        if not choix.isdigit() or not (1 <= int(choix) <= len(ko_pokemons)):
+            print("Choix invalide.")
+            return
+        pokemon = ko_pokemons[int(choix) - 1]
+        return pokemon
       
     def utulisation_item(self,equipe):
        inventaire = self.inventaire1 if equipe == 1 else self.inventaire2
@@ -399,6 +416,28 @@ class lancement():
           pokemon.vitesse = pokemon.vitesse * 4
           print(f"L'utulisation d'un Anti-Para permet à {pokemon.nom} de guérir sa paralysie")
 
+        if item.nom == "Anti-gel" and item.quantite > 0 and "gelé" in pokemon.effet:
+          pokemon.effet.remove("gelé")
+          pokemon.nom = pokemon.nom.replace("(gelé)", "")
+          item.quantite -= 1
+          print(f"L'utulisation d'un Anti-gel permet à {pokemon.nom} de guérir de son dégel")
+          
+        if item.nom == "Rappel max" and item.quantite > 0:
+          equipe_rappel = self.equipe1 if equipe == 1 else self.equipe2
+          pokemon = self.utiliser_rappel(equipe_rappel)
+          if pokemon: # si la méthode utuliser_rappel n'a pas renvoyé de pokémon#
+           pokemon.PV = pokemon.stats_originales[1]
+           item.quantite -= 1
+           print(f"L'utulisation d'un rappel max permet à {pokemon.nom} de regagner l'entiereté de ses PV et de revenir au combat")
+
+        if item.nom == "Rappel" and item.quantite > 0:
+          equipe_rappel = self.equipe1 if equipe == 1 else self.equipe2
+          pokemon = self.utiliser_rappel(equipe_rappel)
+          if pokemon: # si la méthode utuliser_rappel n'a pas renvoyé de pokémon#
+           pokemon.PV = pokemon.stats_originales[1] // 2
+           item.quantite -= 1
+           print(f"L'utulisation d'un rappel permet à {pokemon.nom} de regagner la moitié de ses PV et de revenir au combat")
+        
     def verif_mort(self,pokemon1,pokemon2):
        if pokemon1.PV == 0:
           print(f"{pokemon1.nom} est KO , changement de pokémon")
@@ -420,7 +459,99 @@ class lancement():
       else:
         return 0  
 
-      
+    def objets_tenus(self):
+     while True:
+      res = input("Voulez-vous rajouter des items à tenir ? (Oui/Non)\n> ")
+      if res == "Oui": 
+
+       while True:
+        if not Dic_items_tenus:
+            print("Tous les objets ont été attribués !")
+            return
+        
+        # --- ÉQUIPE 1 --- #
+        print("<<< Pour les pokémons de l'équipe 1 >>>")
+        for i, p in enumerate(self.equipe1, 1):
+            held = f"(tient: {p.held_item.nom})" if hasattr(p, "held_item") and p.held_item else "(aucun objet)"
+            print(f"{i}. {p.nom} {held}")
+        while True:
+            res_pokemon = input("Choisissez un Pokémon (numéro) ou 'q' pour quitter :\n> ")
+            if res_pokemon == "q":
+                return
+            if res_pokemon.isdigit() and 1 <= int(res_pokemon) <= len(self.equipe1):
+                pokemon = self.equipe1[int(res_pokemon) - 1]
+                if pokemon.held_item != None:
+                   continue
+                break
+            print("Choix de Pokémon invalide. Réessayez.")
+        while True:
+            print("<<< Objets disponibles >>>")
+            for i, (nom, item) in enumerate(Dic_items_tenus.items(), 1):
+                print(f"{i}. {nom} - {item.description}")
+            res_item = input("Choisissez un objet (numéro) ou 'q' pour quitter :\n> ")
+            if res_item == "q":
+                return
+            if res_item.isdigit() and 1 <= int(res_item) <= len(Dic_items_tenus):
+                item_nom = list(Dic_items_tenus.keys())[int(res_item) - 1]
+                item = Dic_items_tenus.pop(item_nom).copier_items()  #supprime et copie l'objet
+                pokemon.held_item = item
+                print(f"{pokemon.nom} tient maintenant {item.nom} !")
+                break
+            print("Choix d’objet invalide ou le pokémon a déja un item. Réessayez.")
+        if not Dic_items_tenus:
+            print("Tous les objets ont été attribués !")
+            return
+
+        # --- ÉQUIPE 2 --- #
+        print("\n<<< Pour les pokémons de l'équipe 2 >>>")
+        for i, p in enumerate(self.equipe2, 1):
+            held = f"(tient: {p.held_item.nom})" if hasattr(p, "held_item") and p.held_item else "(aucun objet)"
+            print(f"{i}. {p.nom} {held}")
+        while True:
+            res_pokemon = input("Choisissez un Pokémon (numéro) ou 'q' pour quitter :\n> ")
+            if res_pokemon == "q":
+                return
+            if res_pokemon.isdigit() and 1 <= int(res_pokemon) <= len(self.equipe2):
+                pokemon = self.equipe2[int(res_pokemon) - 1]
+                if pokemon.held_item != None:
+                   continue
+                break
+            print("Choix de Pokémon invalide. Réessayez.")
+        while True:
+            print("<<< Objets disponibles >>>")
+            for i, (nom, item) in enumerate(Dic_items_tenus.items(), 1):
+                print(f"{i}. {nom} - {item.description}")
+            res_item = input("Choisissez un objet (numéro) ou 'q' pour quitter :\n> ")
+            if res_item == "q":
+                return
+            if res_item.isdigit() and 1 <= int(res_item) <= len(Dic_items_tenus):
+                item_nom = list(Dic_items_tenus.keys())[int(res_item) - 1]
+                item = Dic_items_tenus.pop(item_nom).copier_items()
+                pokemon.held_item = item
+                print(f"{pokemon.nom} tient maintenant {item.nom} !")
+                break
+            print("Choix d’objet invalide ou le pokémon à deja un item. Réessayez.")
+      if res == "Non":
+         return
+
+    def utulisation_objets_tenus(self):
+       equipes = (self.equipe1,self.equipe2)
+       for equipe in equipes:
+        for pokemon in equipe:
+           
+           if pokemon.held_item and pokemon.held_item.nom == "Protéine":
+              pokemon.attaque += 10
+          
+           if pokemon.held_item and pokemon.held_item.nom == "Fer":
+              pokemon.defense += 10
+            
+           if pokemon.held_item and pokemon.held_item.nom == "PV plus":
+              pokemon.PV += 10
+
+
+          
+              
+
 
     
 

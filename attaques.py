@@ -46,6 +46,11 @@ Rugissement = Attaques(nom= "Rugissement",type = "Normal",categorie= "statut",pu
 Choc_mental = Attaques(nom= "Choc mental",type = "Psy",categorie= "special",puissance= 50,precision= 100,pp= 25,priorite = 0,effet = ("confusion",1))
 Plénitude = Attaques(nom= "Plénitude",type = "Psy",categorie= "statut",puissance= 0,precision= 100,pp= 20,priorite = 0,effet = None)
 Hypnose = Attaques(nom= "Hypnose",type = "Psy",categorie= "statut",puissance= 0,precision= 60,pp= 20,priorite = 0,effet = ("sommeil",1))
+Meteores = Attaques(nom= "Meteores", type = "Normal", categorie= "special",puissance= 60, precision= 100, pp= 20, priorite = 0, effet = None)
+Double_Pied = Attaques(nom="Double-Pied", type="Combat", categorie="physique",puissance=30, precision=100, pp=30, priorite=0, effet=None)
+Psyko = Attaques(nom="Psyko", type="Psy", categorie="special",puissance=90, precision=100, pp=10, priorite=0, effet=("confusion",10))
+Poing_Meteore = Attaques(nom="Poing Météore", type="Acier", categorie="physique",puissance=90, precision=90, pp=10, priorite=0, effet=None)
+
 
 #Dictionnaire des attaques#
 
@@ -66,5 +71,9 @@ Dic_attaques = {"Charge":Charge,
                 "Rugissement": Rugissement,
                 "Choc mental": Choc_mental,
                 "Plénitude": Plénitude,
-                "Hypnose": Hypnose
+                "Hypnose": Hypnose,
+                "Meteores": Meteores,
+                "Poing Meteore": Poing_Meteore,
+                "Psyko": Psyko,
+                "Double-Pied": Double_Pied
                 }

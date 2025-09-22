@@ -2,7 +2,7 @@ from attaques import Dic_attaques
 from items import Dic_items
 import random
 
-#Dictionnaire des types dans pokemon génération 3#
+"Dictionnaire des types dans pokemon génération, il est fait que la premiere clé soit le type en attaque et le second en défense(Exemple: type_dic[Eau][Feu] accède au multiplicateur d'une attaque eau sur un type feu)"
 type_dic: dict[str, dict[str, float]] = {
     "Normal": {"Normal": 1, "Feu": 1, "Eau": 1, "Plante": 1, "Electrik": 1, "Glace": 1, "Combat": 2, "Poison": 1 ,"Sol": 1,"Vol": 1,"Psy": 1,"Insecte": 1,"Roche": 0.5,"Spectre": 0,"Dragon": 1,"Tenebres": 1,"Acier": 0.5},
     "Feu": {"Normal": 1, "Feu": 0.5, "Eau": 0.5, "Plante": 2, "Electrik": 1, "Glace": 2, "Combat": 1, "Poison": 1 ,"Sol": 1,"Vol": 1,"Psy": 1,"Insecte": 2,"Roche": 0.5,"Spectre": 1,"Dragon": 0.5,"Tenebres": 1,"Acier": 2},
@@ -22,10 +22,9 @@ type_dic: dict[str, dict[str, float]] = {
     "Tenebres": {"Normal": 1, "Feu": 1, "Eau": 1, "Plante": 1, "Electrik": 1, "Glace": 1, "Combat": 0.5, "Poison": 1 ,"Sol": 1,"Vol": 1,"Psy": 2,"Insecte": 1,"Roche": 1,"Spectre": 2,"Dragon": 1,"Tenebres": 0.5,"Acier": 0.5},
     "Acier": {"Normal": 1, "Feu": 0.5, "Eau": 0.5, "Plante": 1, "Electrik": 1, "Glace": 2, "Combat": 1, "Poison": 1 ,"Sol": 1,"Vol": 1,"Psy": 1,"Insecte": 1,"Roche": 2,"Spectre": 1,"Dragon": 1,"Tenebres": 1,"Acier": 0.5},
 }
-
-#Classe qui s'occupe des pokemons et de leurs attributs spécifiques#
         
 class pokemon():
+   "Initialisation de la classe pokémon qui prend en argument tous les attributs et les intègre"
    def __init__(self,nom : str,type: str | tuple[str, str],PV: int,attaque: int,defense: int,attaque_spe: int,defense_spe: int,vitesse:int,liste_attaques : list,effet: list[str],niveau: int):
       self.nom: str = nom
       self.PV: int = PV
@@ -52,9 +51,8 @@ class pokemon():
       self.mode: int = 0 #Si c'est un joueur ou un bot#
       self.held_item = None
 
-    #méthode qui affiche le menu spécfique au pokemon qui joue #
-
-   def afficher_menu(self,joueur,equipe) -> int | str:
+   def afficher_menu(self,joueur) -> int | str:
+      "Méthode qui affiche le menu , elle "
       while True:
          if self != joueur: #si c'est un bot#
             retour = random.randint(1, len(self.liste_attaques))

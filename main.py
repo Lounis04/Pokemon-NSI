@@ -1,8 +1,10 @@
-#le pokemon1 correspond au joueur 1 et le pokemon2 au joueur 2#
-#le niveau des pokemons est le niveau 1(base)#
+#Bienvenue dans le simulateur de combat de pokémon , afin de changer les équipes il faut changer les élements des listes equipe1 et equipe#
+
 
 from pokemons import Dic_pokemons
 from gestion_combat import lancement
+
+#Association au pokémon à sa clé dans le dictionnaire des pokémons Dic_pokemons"
 
 Salameche = Dic_pokemons["Salameche"]
 Carapuce = Dic_pokemons["Carapuce"]
@@ -13,6 +15,9 @@ Metang = Dic_pokemons["Metang"]
 Poussifeu = Dic_pokemons["Poussifeu"]
 Gobou = Dic_pokemons["Gobou"]
 Arcko = Dic_pokemons["Arcko"]
+
+#Liste des équipes#
+"Pokémons disponibles"
 
 equipe1: list = [Carapuce,Pikachu]
 equipe2: list = [Tarsal,Metang]

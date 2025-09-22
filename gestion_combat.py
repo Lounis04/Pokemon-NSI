@@ -1,10 +1,9 @@
 import random
 from items import Items , Dic_items , Dic_items_tenus
 
-
-#Classe qui s'occupe de la gestion du combat #
-
 class lancement():
+  "Initialisation de la classe lancement , en entrée on prend les 2 équipes de pokémons , elle ne renvoie rien , mais initialise les inventaires des 2 équipes"
+  "dit quel est le pokémon choisi dans les équipes pokemon1 ou 2 [0]"
   def __init__(self,pokemon1:list,pokemon2:list) -> None:
     self.pokemon1 = pokemon1[0]
     self.pokemon2 = pokemon2[0]
@@ -13,9 +12,8 @@ class lancement():
     self.equipe1: list = pokemon1 # type: list[Pokemon]
     self.equipe2: list = pokemon2 # type: list[Pokemon]
 
-   #Méthode qui permet de lancer le combat #
-
   def lancement_combat(self) -> None:
+    "Classe Majeur du code qui s'occupe de gérer le déroulement du combat, elle ne prend aucun argument en entrée et n'en ressort aucun"
     rounds : int = 1
     print("combat lancé")
     mode : int = self.choix_mode_jeu() #0 correspond à du joueur contre joueur et 1 du joueur contre bot#
@@ -126,9 +124,9 @@ class lancement():
         rounds += 1
         print(f">>>>>>>>>> début du round {rounds} <<<<<<<<<<<")
                  
-   #Méthode qui demande le choix du mode de jeu : contre un joueur ou un bot#
-
   def choix_mode_jeu(self) -> int:
+    "Méthode qui demande à l'utulisateur s'il veut faire du joueur contre joueur ou du joueur contre bot , elle ne prend rien en entrée et renvoie 0(en cas de joueur contre joueur)"
+    "et 1(en cas de joueur contre bot) , utulisée dans lancement_combat()"
     while True:
       res = input("Voulez-vous jouer contre un joueur ou un bot ? (joueur/bot)\n> ") # \n permet de sauter la ligne pour la réponse  #
       if res == "joueur":
@@ -137,11 +135,9 @@ class lancement():
         return 1
       else:
         continue
-          
-  
-   #Méthode#
     
   def choix_items(self) -> bool:
+    "Méthode qui demande à l'utulisateur s'il veut jouer avec des items , elle ne prend aucune entrée et renvoie True si Oui et False si Non , utulisée dans  lancement_combat() "
     while True:
       res = input("Voulez-vous jouer avec des items ? (Oui/Non)\n> ")
       if res == "Oui":
@@ -149,12 +145,11 @@ class lancement():
       if res == "Non":
         return False
       else:
-        continue
-
-
-   #Méthode qui demande au joueur quel pokemon il veut jouer s'il souhaite jouer contre un bot#           
+        continue        
 
   def choix_pokemon_bot(self):
+    "Méthode qui est utulisé si l'utulisateur choisi de faire du joueur contre bot,elle demande à l'utulisateur dans quelle équipe il veut jouer , elle ne prend rien en entrée et renvoie self.pokemon1 si le joueur"
+    "veut jouer dans l'équipe 1 et self.pokemon2 s'il veut jouer avec l'équipe 2, utulisée dans lancement_combat()"
     res = input(f"lequel des 2 pokemons voulez vous etre le dresseur ?: ({self.pokemon1.nom}/{self.pokemon2.nom})\n> ")
     if res == self.pokemon1.nom:
       print(f"vous êtes désormais le dresseur de : {self.pokemon1.nom}" )
@@ -163,9 +158,9 @@ class lancement():
       print(f"vous êtes désormais le dresseur de : {self.pokemon2.nom}" )
       return self.pokemon2
         
-   #Méthode qui définit qui joue en premier grâce à la vitesse des pokemons#
-
   def joue_en_premier(self,res_pokemon1 : int ,res_pokemon2 : int):
+    "Méthode qui est utulisée pour savoir lequel des 2 pokémons va attaquer en premier , elle prend en entrée les numéros des attaques des 2 pokémons chacun(par exemple 3 de salameche c'est flammèche et on revient à ça dans la fonction),"
+    "elle va renvoyer self.pokemon1 ou self.pokemon2 en fonction de qui va attaquer, utulisée dans lancement_combat()"
     if self.pokemon1.liste_attaques[res_pokemon1 - 1].priorite > self.pokemon2.liste_attaques[res_pokemon2 - 1].priorite:
       return self.pokemon1
     if self.pokemon2.liste_attaques[res_pokemon2 - 1].priorite > self.pokemon1.liste_attaques[res_pokemon1 - 1].priorite:
@@ -177,17 +172,17 @@ class lancement():
     else:
       return random.choice([self.pokemon1, self.pokemon2]) #Si les deux ont la même vitesse#
        
-   #Méthode qui définit qui joue en second par la vitesse#
-       
   def joue_en_second(self,premier):
+    "Méthode en parallèle de joue_en_premier qui détermine qui joue en second ,elle prend en argument le premier(résultat de joue_en_premier , celui qui joue en premier) et renvoie le second , tout simplement "
+    "celui qui a pas été selectionné par joue_en_premier, utulisée dans lancement_combat()"
     if premier == self.pokemon1:
       return self.pokemon2
     if premier == self.pokemon2:
       return self.pokemon1
-       
-   #Méthode qui applique les effets des status#
 
   def applications_statut(self,premier,second,rounds : int)  -> None:
+    "Méthode qui gère l'application des status qui font des dégats , elle prend en argument le premier , le second et les rounds, et ne renvoie rien , son utulité est d'infliger les dégats par les statuts comme les brulures ou le poison"
+    "l'utulisation de premier et second ne révèle pas d'un ordre de passage de concret mais juste d'utulité et les rounds sont pris en compte pour confusion qui n'est pas un effet illimité , utulisée dans lancement_combat()"
     tuple = (premier,second)
     for i in range(len(tuple)):
       for j in range(len(tuple[i].effet)):
@@ -214,10 +209,11 @@ class lancement():
             tuple[i].effet_round_confusion = None
             tuple[i].confusion_duree = None
             tuple[i].nom = tuple[i].nom.replace("(confus)", "")
-
-                   #Les effets de la paralysie et du sommeil sont pris en compte dans miss()
+            #Les effets de la paralysie et du sommeil sont pris en compte dans miss()
                    
   def changer_pokemon(self, equipe: int)  -> None:
+    "Méthode qui permet de changer de pokemon , elle prend en argument l'équipe qui doit changer de pokémon et ne renvoie rien , le bot prend le premier de la liste qui a plus de 0 PV ,le joueur peut faire son choix"
+    ", utulisée dans lancement_combat()"
     if equipe == 1:
       if self.pokemon1.mode == 1: # si c'est un bot"
         for p in self.equipe1:
@@ -292,6 +288,7 @@ class lancement():
           continue
 
   def initialiser_inventaires(self)  -> None:
+    "Méthode qui initialise les inventaires des 2 équipes , elle ne prend rien en argument et ne renvoie rien, elle demande à l'utulisateur la quantité qu'il veut pour chacun des  objets des 2 équipes , utulisée dans lancement_combat()"
     self.inventaire1 = []
     self.inventaire2 = []
 
@@ -313,6 +310,8 @@ class lancement():
       self.inventaire2.append(item2)
 
   def utiliser_rappel(self, equipe : list) -> object | None:
+    "Méthode qui permet l'utulisation des rappels , elle prend en argument la liste qui correspond aux 2 équipes (equipe_rappel dans l'utulisation de rappel et rappel max dans utulisation_item) et ne renvoie rien"
+    "Elle affiche donc la liste des pokémons KO de l'équipe et permet de les réanimer, utulisée dans lancement_combat() "
     ko_pokemons = [p for p in equipe if p.PV <= 0]
     if not ko_pokemons:
       print("Aucun Pokémon K.O. dans cette équipe.")
@@ -328,6 +327,7 @@ class lancement():
     return pokemon
       
   def utulisation_item(self,equipe: int) -> None:
+    "Méthode qui permet d'utuliser les items dans l'inventaire, elle prend en argument l'équipe(le chiffre de l'équipe 1 ou 2) et ne renvoie rien, utulisée dans lancement_combat()"
     inventaire = self.inventaire1 if equipe == 1 else self.inventaire2
     if inventaire == self.inventaire1:
       pokemon = self.pokemon1
@@ -442,6 +442,7 @@ class lancement():
           print(f"L'utulisation d'un rappel permet à {pokemon.nom} de regagner la moitié de ses PV et de revenir au combat")
         
   def verif_mort(self,pokemon1,pokemon2) -> None:
+    "Méthode qui vérifie si l'un des deux pokémon combattant est mort et oblige à changer de pokémon , elle prend en argument les deux pokémons combattants et ne renvoie rien, utulisée dans lancement_combat()"
     if pokemon1.PV <= 0:
       print(f"{pokemon1.nom} est KO , changement de pokémon")
       self.changer_pokemon(1)
@@ -450,6 +451,7 @@ class lancement():
       self.changer_pokemon(2)
 
   def verif_gagnant(self) -> int:
+    "Méthode qui vérifie si l'une des 2 équipes a gagné , elle prend rien en argument et renvoie le numéro de l'équipe gagnante, utulisé dans lancement_combat()"
     equipe1_KO = all(p.PV <= 0 for p in self.equipe1)
     equipe2_KO = all(p.PV <= 0 for p in self.equipe2)
 
@@ -463,6 +465,7 @@ class lancement():
       return 0  
 
   def objets_tenus(self) -> None:
+    "Méthode qui demande à l'utulisateur s'il veut rajouter des items à tenir aux pokémons et qui permet de leur les attribuer , elle ne prend rien en argument et ne renvoie rien, utulisée dans lancement_combat()"
     while True:
       res = input("Voulez-vous rajouter des items à tenir ? (Oui/Non)\n> ")
       if res == "Oui": 
@@ -539,6 +542,7 @@ class lancement():
         return
 
   def utulisation_objets_tenus(self) -> None:
+    "Méthode qui applique les effets des objets tenus , elle prend rien en argument et renvoie rien, utulisée dans lancement_combat()"
     equipes = (self.equipe1,self.equipe2)
     for equipe in equipes:
       for pokemon in equipe:

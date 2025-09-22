@@ -1,5 +1,6 @@
-# Classe qui s'occupe des attaques et de leurs attributs
+
 class Attaques:
+    "Initialisation de la classe Attaques ,on prend tous ses attributs en entrée et on les intégre à la classe"
     def __init__(self,nom: str,type: str,categorie: str,puissance: int | None,precision: int,pp: int,priorite: int,effet: tuple[str, int] | None) -> None:
         self.nom: str = nom
         self.type: str = type
@@ -12,6 +13,8 @@ class Attaques:
 
     # méthode qui crée une copie des attaques spécifiques aux pokemons
     def copier_attaques(self) -> "Attaques":
+        "Fonction qui permet de créer une copie des attaques ,ceci permet d'éviter la globalisation des élements des attaques entre les pokémons (PP,etc,..),Elle prend en entrée"
+        "tous les arguments de la classe et en resort des copies , elle est utulisée dans l'init de la classe Pokémon"
         return Attaques(
             nom=self.nom,
             type=self.type,
@@ -23,8 +26,8 @@ class Attaques:
             effet=self.effet,
         )
 
+#Liste des attaques avec leurs attributs#
 
-# Liste des attaques avec leurs attributs
 Charge: Attaques = Attaques("Charge", "Normal", "physique", 35, 95, 35, 0, None)
 Griffe: Attaques = Attaques("Griffe", "Normal", "physique", 40, 100, 35, 0, None)
 Flammeche: Attaques = Attaques("Flammeche", "Feu", "special", 40, 100, 25, 0, ("burn", 8))
@@ -49,7 +52,8 @@ Psyko: Attaques = Attaques("Psyko", "Psy", "special", 90, 100, 10, 0, ("confusio
 Poing_Meteore: Attaques = Attaques("Poing Météore", "Acier", "physique", 90, 90, 10, 0, None)
 
 
-# Dictionnaire des attaques
+# Dictionnaire des attaques avec l'attaque et sa clé associée#
+
 Dic_attaques: dict[str, Attaques] = {
     "Charge": Charge,
     "Griffe": Griffe,

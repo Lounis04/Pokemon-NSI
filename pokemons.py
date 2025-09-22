@@ -2,7 +2,7 @@ from attaques import Dic_attaques
 from items import Dic_items
 import random
 
-"Dictionnaire des types dans pokemon génération, il est fait que la premiere clé soit le type en attaque et le second en défense(Exemple: type_dic[Eau][Feu] accède au multiplicateur d'une attaque eau sur un type feu)"
+#Dictionnaire des types dans pokemon génération, il est fait que la premiere clé soit le type en attaque et le second en défense(Exemple: type_dic[Eau][Feu] accède au multiplicateur d'une attaque eau sur un type feu)#
 type_dic: dict[str, dict[str, float]] = {
     "Normal": {"Normal": 1, "Feu": 1, "Eau": 1, "Plante": 1, "Electrik": 1, "Glace": 1, "Combat": 2, "Poison": 1 ,"Sol": 1,"Vol": 1,"Psy": 1,"Insecte": 1,"Roche": 0.5,"Spectre": 0,"Dragon": 1,"Tenebres": 1,"Acier": 0.5},
     "Feu": {"Normal": 1, "Feu": 0.5, "Eau": 0.5, "Plante": 2, "Electrik": 1, "Glace": 2, "Combat": 1, "Poison": 1 ,"Sol": 1,"Vol": 1,"Psy": 1,"Insecte": 2,"Roche": 0.5,"Spectre": 1,"Dragon": 0.5,"Tenebres": 1,"Acier": 2},
@@ -52,7 +52,8 @@ class pokemon():
       self.held_item = None
 
    def afficher_menu(self,joueur) -> int | str:
-      "Méthode qui affiche le menu , elle "
+      "Méthode qui affiche le menu , elle prend en argument le joueur(c'est juste pour savoir si c'est un joueur qui joue ou un bot , le bot choisit une attaque random parmi les 4), elle renvoie un str qui sera renvoyé dans lancement_combat"
+      "ou un int si l'utulisateur fait une attaque, utulisée dans lancement_combat()"
       while True:
          if self != joueur: #si c'est un bot#
             retour = random.randint(1, len(self.liste_attaques))
@@ -87,12 +88,9 @@ class pokemon():
                   continue
          else:
             continue
-         
-          
 
-   #méthode de calcul du stab#
-
-   def calcul_stab(self: int,res) -> float:
+   def calcul_stab(self,res:int) -> float:
+      "Méthode qui calcul le STAB(si le pokémon fait une attaque de son type alors x1.5), elle prend en argument le nombre associé à l'attaque du pokémon (3 pour flammcèehe de salamèche) et renvoie le STAB , utulisée dans degats()"
       if isinstance(self.type,tuple): #Cas de double type
          if self.liste_attaques[res - 1].type in self.type:
             return 1.5
@@ -100,19 +98,18 @@ class pokemon():
            if self.type == self.liste_attaques[res - 1].type: # Cas un seul type#
             return 1.5
       return 1
-           
-   #méthode qui gère les coups critiques , leur probabilité et leur multiplicateur#
 
    def coup_critique(self) -> int:
+      "Méthode qui calcule la probabilité d'un coup critique , elle ne prend rien en entrée et renvoie x1 ou x2 en fonction de random , utulisée dans degats()"
       if random.randint(1, 16) == 1:
          print("Coup Critique !")
          return 2
       else:
          return 1
-       
-   #méthode qui s'occupe de gérer le multiplicateur des attaques selon le type de l'attaque et du pokemon qui la subit#
-       
+
    def efficacite_type(self,second,res: int) -> float:
+      "Méthode qui calcule l'efficacite des types(Elle reprend entièrement type_dic) et renvoie l'efficacité de l'attaque , elle prend en entrée le second(celui qui subit l'attaque) et le numéro de l'attaque du pokémon en offensive"
+      ",utulisée dans degats()"
       if not isinstance(second.type, tuple): #Permet de savoir si second.type n'est pas un tuple , ducoup si le pokemon a 1 seul type#
          Efficacite = type_dic[self.liste_attaques[res - 1].type][second.type]
       else:
@@ -131,10 +128,10 @@ class pokemon():
       elif Efficacite == 0:
          print("L'attaque n'a pas eu d'effet !,retournez réviser vos tables de type")
          return Efficacite
-       
-   #méthode qui crée une possibilité que le pokemon attaquant rate#
-       
+
    def miss(self,res: int,rounds: int) -> bool:
+      "Méthode qui prend en compte le fait qu'un pokémon peut rater son attaque, les effets de paralysie de gel et de sommeil y sont pris en compte , elle prend en entrée le numéro de l'attaque du pokémon à l'attaque et le numéro du round"
+      "et renvoie False(Si le pokémon n'a pas raté son attaque) et True(s'il la raté) , utulisée dans degats()"
       chance = random.randint(1,100)
       for i in range(len(self.effet) - 1,-1,-1):
          if self.effet[i] == "gel":
@@ -161,10 +158,10 @@ class pokemon():
          return False
       else:
          return True
-       
-   #méthode principale qui inclut STAB , miss , coups critique , efficacité type , elle calcule les dégats des attaques , gère la perte des PP , la perte des pv de celui qui subit l'attaque#
-
+      
    def degats(self,second :"pokemon",res: int,rounds: int) -> None:
+      "Méthode majeur du programme , elle calcule les dégats d'une attaque et si elle a un effet le renvoie aux fonctions pour ceci , elle prend en entrée le second(celui qui subit l'attaque) , le numéro de l'attaque"
+      "associé au pokémon et le round et ne renvoie rien "
       degats = 0
       STAB = self.calcul_stab(res)
       Efficacite = self.efficacite_type(second,res)
@@ -194,6 +191,8 @@ class pokemon():
          print(f"{self.nom} a infligé {degats} de dégats en utulisant {self.liste_attaques[res - 1].nom} sur {second.nom} qui est à {second.PV} PV, à son tour !")
 
    def appliquer_un_statut(self,second: "pokemon",res: int) -> None:
+      "Méthdde qui calcule si un effet se réalise bien et en réalise les conséquences , ajout à la liste et dans le nom ou deboosts , elle prend en entrée le second(celui qui subit) et le numéro associé à l'attaque du pokémon ,"
+      "utulisée dans degats()"
       if self.liste_attaques[res - 1].effet[0] == "burn" and random.randint(1,self.liste_attaques[res - 1].effet[1]) == 1:
          if "burn" not in second.effet:
             print(f"{second.nom} a été brulé")
@@ -234,6 +233,7 @@ class pokemon():
             second.nom += "(gelé)"
 
    def remise_niveau(self) -> None:
+     "Méthode qui recalcule les stats des pokémons en fonction du niveau qui leur est donné , elle ne prend rien en argument et renvoie rien , utulisée dans lancement_combat()"
      while True:
          niveau= input(f"De quel niveau est {self.nom} ? (1-100)\n>  ")
          if niveau.isdigit(): #vérifie si c'est un chiffre ou un nombre#
@@ -253,6 +253,7 @@ class pokemon():
      self.stats_originales = (self.nom,self.PV, self.attaque, self.attaque_spe, self.defense, self.defense_spe) #stats originales du pokemon sauvegardés dans un tuple#
 
    def statuts_à_niveau(self,second: "pokemon",res: int) -> None:
+      "Méthode qui permet l'utulisation d'attaques de statut qui font baisser les stats par cran , elle prend en entrée le second(celui qui subit) et le numéro de l'attaque associée au pokémon, elle est utulisée dans degats()"
       dic_niveaux = {
          -6 : 0.25,
          -5: 2/7,
@@ -302,6 +303,8 @@ Poussifeu = pokemon(nom="Poussifeu", type="Feu", PV=45, attaque=60, defense=40,a
 Gobou = pokemon(nom="Gobou", type="Eau", PV=50, attaque=70, defense=50,attaque_spe=50, defense_spe=50, vitesse=40,liste_attaques=[Dic_attaques["Charge"], Dic_attaques["Pistolet à O"], Dic_attaques["Ecume"], Dic_attaques["Morsure"]],effet=None, niveau=1)
 Metang = pokemon(nom="Metang", type=("Acier", "Psy"), PV=60, attaque=75, defense=100,attaque_spe=55, defense_spe=80, vitesse=50,liste_attaques=[Dic_attaques["Poing Meteore"],Dic_attaques["Meteores"],Dic_attaques["Griffe acier"],Dic_attaques["Psyko"]],effet=None, niveau=1)
  
+#Dictionnaire des pokémons avec la classe associée et leur clé#
+
 Dic_pokemons: dict[str, pokemon] = {
    "Salameche": Salameche,
    "Carapuce": Carapuce,

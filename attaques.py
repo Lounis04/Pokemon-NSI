@@ -1,79 +1,76 @@
+# Classe qui s'occupe des attaques et de leurs attributs
+class Attaques:
+    def __init__(self,nom: str,type: str,categorie: str,puissance: int | None,precision: int,pp: int,priorite: int,effet: tuple[str, int] | None) -> None:
+        self.nom: str = nom
+        self.type: str = type
+        self.categorie: str = categorie
+        self.puissance: int | None = puissance
+        self.precision: int = precision
+        self.pp: int = pp
+        self.priorite: int = priorite
+        self.effet: tuple[str, int] | None = effet
 
-#Classe qui s'occupe des attaques et de leurs attributs#
-
-class Attaques():
-   def __init__(self, nom, type , categorie, puissance, precision, pp, priorite, effet):
-        self.nom = nom
-        self.type = type
-        self.categorie = categorie  
-        self.puissance = puissance
-        self.precision = precision
-        self.pp = pp
-        self.priorite = priorite
-        self.effet = effet 
-
-   # méthode qui crée une copie des attaques spécifiques aux pokemons pour éviter la globalisation des PP,ceci permet d'éviter par exemple que quand pokemon1 utulise charge alors pokemon2 perd 1 PP de charge aussi#
-
-   def copier_attaques(self):     
-       return Attaques(
-           nom=self.nom,
-           type=self.type,
-           categorie=self.categorie,
-           puissance=self.puissance,
-           precision=self.precision,
-           pp=self.pp,
-           priorite=self.priorite,
-           effet=self.effet
-       )
-
-#Liste des attaques avec leurs attributs"
-
-Charge = Attaques(nom= "Charge",type = "Normal",categorie= "physique",puissance= 35,precision= 95,pp= 35,priorite =0,effet = None)              
-Griffe = Attaques(nom= "Griffe",type = "Normal",categorie= "physique",puissance= 40,precision= 100,pp= 35,priorite = 0,effet = None)
-Flammeche = Attaques(nom= "Flammeche",type = "Feu",categorie= "special",puissance= 40,precision= 100,pp= 25,priorite = 0,effet = ("burn",8))     #Pour un effet on prend son nom et sa probabilité , ici 8 correspond à une probabilité de 1/8#
-Griffe_acier = Attaques(nom= "Griffe acier",type = "Acier",categorie= "physique",puissance= 50,precision= 95,pp= 35,priorite = 0,effet = None)
-Pistolet_A_O = Attaques(nom= "Pistolet à O",type = "Eau",categorie= "special",puissance= 40,precision= 100,pp= 25,priorite = 0,effet = None)
-Ecume = Attaques(nom= "Ecume",type = "Eau",categorie= "special",puissance= 20,precision= 100,pp= 30,priorite = 0,effet = None)
-Morsure = Attaques(nom= "Morsure",type = "Tenebres",categorie= "special",puissance= 60,precision= 100,pp= 25,priorite = 0,effet = None)
-Fouet_lianes = Attaques(nom= "Fouet liane",type = "Plante",categorie= "special",puissance= 45,precision= 100,pp= 25,priorite = 0,effet = None)
-Tranch_herbe = Attaques(nom= "Tranch'herbe",type = "Plante",categorie= "special",puissance= 55,precision= 95,pp= 25,priorite = 0,effet = None)
-Poudre_toxik = Attaques(nom= "Poudre toxik",type = "Poison",categorie= "statut",puissance= None,precision= 75,pp= 35,priorite = 0,effet = ("poison",1))
-Cage_eclair = Attaques(nom= "Cage éclair",type = "Electrik",categorie= "statut",puissance= None,precision= 100,pp= 20,priorite = 0,effet = ("paralysie",1))
-Eclair = Attaques(nom= "Eclair",type = "Electrik",categorie= "special",puissance= 40,precision= 100,pp= 30,priorite = 0,effet = ("paralysie",10))
-Vive_attaque = Attaques(nom= "Vive attaque",type = "Normal",categorie= "physique",puissance= 40,precision= 100,pp= 30,priorite = 1,effet = None)
-Mimi_queue = Attaques(nom= "Mimi-queue",type = "Normal",categorie= "statut",puissance= 0,precision= 100,pp= 30,priorite = 0,effet = None)
-Rugissement = Attaques(nom= "Rugissement",type = "Normal",categorie= "statut",puissance= 0,precision= 100,pp= 10,priorite = 0,effet = None)
-Choc_mental = Attaques(nom= "Choc mental",type = "Psy",categorie= "special",puissance= 50,precision= 100,pp= 25,priorite = 0,effet = ("confusion",1))
-Plénitude = Attaques(nom= "Plénitude",type = "Psy",categorie= "statut",puissance= 0,precision= 100,pp= 20,priorite = 0,effet = None)
-Hypnose = Attaques(nom= "Hypnose",type = "Psy",categorie= "statut",puissance= 0,precision= 60,pp= 20,priorite = 0,effet = ("sommeil",1))
-Meteores = Attaques(nom= "Meteores", type = "Normal", categorie= "special",puissance= 60, precision= 100, pp= 20, priorite = 0, effet = None)
-Double_Pied = Attaques(nom="Double-Pied", type="Combat", categorie="physique",puissance=30, precision=100, pp=30, priorite=0, effet=None)
-Psyko = Attaques(nom="Psyko", type="Psy", categorie="special",puissance=90, precision=100, pp=10, priorite=0, effet=("confusion",10))
-Poing_Meteore = Attaques(nom="Poing Météore", type="Acier", categorie="physique",puissance=90, precision=90, pp=10, priorite=0, effet=None)
+    # méthode qui crée une copie des attaques spécifiques aux pokemons
+    def copier_attaques(self) -> "Attaques":
+        return Attaques(
+            nom=self.nom,
+            type=self.type,
+            categorie=self.categorie,
+            puissance=self.puissance,
+            precision=self.precision,
+            pp=self.pp,
+            priorite=self.priorite,
+            effet=self.effet,
+        )
 
 
-#Dictionnaire des attaques#
+# Liste des attaques avec leurs attributs
+Charge: Attaques = Attaques("Charge", "Normal", "physique", 35, 95, 35, 0, None)
+Griffe: Attaques = Attaques("Griffe", "Normal", "physique", 40, 100, 35, 0, None)
+Flammeche: Attaques = Attaques("Flammeche", "Feu", "special", 40, 100, 25, 0, ("burn", 8))
+Griffe_acier: Attaques = Attaques("Griffe acier", "Acier", "physique", 50, 95, 35, 0, None)
+Pistolet_A_O: Attaques = Attaques("Pistolet à O", "Eau", "special", 40, 100, 25, 0, None)
+Ecume: Attaques = Attaques("Ecume", "Eau", "special", 20, 100, 30, 0, None)
+Morsure: Attaques = Attaques("Morsure", "Tenebres", "special", 60, 100, 25, 0, None)
+Fouet_lianes: Attaques = Attaques("Fouet liane", "Plante", "special", 45, 100, 25, 0, None)
+Tranch_herbe: Attaques = Attaques("Tranch'herbe", "Plante", "special", 55, 95, 25, 0, None)
+Poudre_toxik: Attaques = Attaques("Poudre toxik", "Poison", "statut", None, 75, 35, 0, ("poison", 1))
+Cage_eclair: Attaques = Attaques("Cage éclair", "Electrik", "statut", None, 100, 20, 0, ("paralysie", 1))
+Eclair: Attaques = Attaques("Eclair", "Electrik", "special", 40, 100, 30, 0, ("paralysie", 10))
+Vive_attaque: Attaques = Attaques("Vive attaque", "Normal", "physique", 40, 100, 30, 1, None)
+Mimi_queue: Attaques = Attaques("Mimi-queue", "Normal", "statut", 0, 100, 30, 0, None)
+Rugissement: Attaques = Attaques("Rugissement", "Normal", "statut", 0, 100, 10, 0, None)
+Choc_mental: Attaques = Attaques("Choc mental", "Psy", "special", 50, 100, 25, 0, ("confusion", 1))
+Plénitude: Attaques = Attaques("Plénitude", "Psy", "statut", 0, 100, 20, 0, None)
+Hypnose: Attaques = Attaques("Hypnose", "Psy", "statut", 0, 60, 20, 0, ("sommeil", 1))
+Meteores: Attaques = Attaques("Meteores", "Normal", "special", 60, 100, 20, 0, None)
+Double_Pied: Attaques = Attaques("Double-Pied", "Combat", "physique", 30, 100, 30, 0, None)
+Psyko: Attaques = Attaques("Psyko", "Psy", "special", 90, 100, 10, 0, ("confusion", 10))
+Poing_Meteore: Attaques = Attaques("Poing Météore", "Acier", "physique", 90, 90, 10, 0, None)
 
-Dic_attaques = {"Charge":Charge,
-                "Griffe":Griffe,
-                "Flammeche":Flammeche,
-                "Griffe acier":Griffe_acier,
-                "Pistolet à O":Pistolet_A_O,
-                "Ecume": Ecume,
-                "Morsure": Morsure,
-                "Fouet lianes": Fouet_lianes,
-                "Tranch'herbe": Tranch_herbe,
-                "Poudre toxik": Poudre_toxik,
-                "Cage éclair": Cage_eclair,
-                "Eclair" : Eclair,
-                "Vive attaque": Vive_attaque,
-                "Mimi-queue": Mimi_queue,
-                "Rugissement": Rugissement,
-                "Choc mental": Choc_mental,
-                "Plénitude": Plénitude,
-                "Hypnose": Hypnose,
-                "Meteores": Meteores,
-                "Poing Meteore": Poing_Meteore,
-                "Psyko": Psyko,
-                "Double-Pied": Double_Pied
-                }
+
+# Dictionnaire des attaques
+Dic_attaques: dict[str, Attaques] = {
+    "Charge": Charge,
+    "Griffe": Griffe,
+    "Flammeche": Flammeche,
+    "Griffe acier": Griffe_acier,
+    "Pistolet à O": Pistolet_A_O,
+    "Ecume": Ecume,
+    "Morsure": Morsure,
+    "Fouet lianes": Fouet_lianes,
+    "Tranch'herbe": Tranch_herbe,
+    "Poudre toxik": Poudre_toxik,
+    "Cage éclair": Cage_eclair,
+    "Eclair": Eclair,
+    "Vive attaque": Vive_attaque,
+    "Mimi-queue": Mimi_queue,
+    "Rugissement": Rugissement,
+    "Choc mental": Choc_mental,
+    "Plénitude": Plénitude,
+    "Hypnose": Hypnose,
+    "Meteores": Meteores,
+    "Poing Meteore": Poing_Meteore,
+    "Psyko": Psyko,
+    "Double-Pied": Double_Pied,
+}

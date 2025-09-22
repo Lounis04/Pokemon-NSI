@@ -14,8 +14,8 @@ Poussifeu = Dic_pokemons["Poussifeu"]
 Gobou = Dic_pokemons["Gobou"]
 Arcko = Dic_pokemons["Arcko"]
 
-equipe1 = [Metang,Poussifeu]
-equipe2 = [Arcko,Gobou]
+equipe1: list = [Carapuce,Pikachu]
+equipe2: list = [Tarsal,Metang]
 
 if __name__ == "__main__":
   partie = lancement(equipe1,equipe2)

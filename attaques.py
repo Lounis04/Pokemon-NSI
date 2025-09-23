@@ -11,9 +11,8 @@ class Attaques:
         self.priorite: int = priorite
         self.effet: tuple[str, int] | None = effet
 
-    # méthode qui crée une copie des attaques spécifiques aux pokemons
     def copier_attaques(self) -> "Attaques":
-        "Fonction qui permet de créer une copie des attaques ,ceci permet d'éviter la globalisation des élements des attaques entre les pokémons (PP,etc,..),Elle prend en entrée"
+        "Méthode qui permet de créer une copie des attaques ,ceci permet d'éviter la globalisation des élements des attaques entre les pokémons (PP,etc,..),Elle prend en entrée"
         "tous les arguments de la classe et en resort des copies , elle est utulisée dans l'init de la classe Pokémon"
         return Attaques(
             nom=self.nom,

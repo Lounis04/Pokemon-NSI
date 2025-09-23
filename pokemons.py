@@ -133,7 +133,7 @@ class pokemon():
       "Méthode qui prend en compte le fait qu'un pokémon peut rater son attaque, les effets de paralysie de gel et de sommeil y sont pris en compte , elle prend en entrée le numéro de l'attaque du pokémon à l'attaque et le numéro du round"
       "et renvoie False(Si le pokémon n'a pas raté son attaque) et True(s'il la raté) , utulisée dans degats()"
       chance = random.randint(1,100)
-      for i in range(len(self.effet) - 1,-1,-1):
+      for i in range(len(self.effet)):
          if self.effet[i] == "gel":
             print(f"{self.nom} est gelé, il ne peut pas attaquer !")
             return True

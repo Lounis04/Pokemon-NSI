@@ -36,7 +36,7 @@ class lancement():
         self.verif_mort(self.pokemon1,self.pokemon2)
         print(f"Dresseur de {self.pokemon1.nom} que voulez vous faire ?")
         while True:
-          res_pokemon1 = self.pokemon1.afficher_menu(self.pokemon1, 1)
+          res_pokemon1 = self.pokemon1.afficher_menu(self.pokemon1)
           if res_pokemon1 == "changer":
             self.changer_pokemon(1)
             continue
@@ -46,7 +46,7 @@ class lancement():
           break  # ici res_pokemon1 est forcément une attaque valide (int)
         print(f"Dresseur de {self.pokemon2.nom} que voulez vous faire ?")
         while True:
-          res_pokemon2 = self.pokemon2.afficher_menu(self.pokemon2, 2)
+          res_pokemon2 = self.pokemon2.afficher_menu(self.pokemon2)
           if res_pokemon2 == "changer":
             self.changer_pokemon(2)
             continue
@@ -96,7 +96,7 @@ class lancement():
           bot = self.pokemon1 if bot in self.equipe1 else self.pokemon2
         print(f"Dresseur de {joueur.nom} que voulez vous faire ?")
         while True:
-          res_joueur = joueur.afficher_menu(joueur, 1)  
+          res_joueur = joueur.afficher_menu(joueur)  
           if res_joueur == "changer":
             equipe_joueur = 1 if joueur in self.equipe1 else 2
             self.changer_pokemon(equipe_joueur)
@@ -358,7 +358,7 @@ class lancement():
         print(f"L'utulisation d'une Hyper-potion permet à {pokemon.nom} de regagner 200 PV , {pokemon.nom} est désormais à {pokemon.PV} PV")
 
       if item.nom == "Super-potion" and item.quantite > 0:
-        if item.PV_item + pokemon.PV  > pokemon.stats_originales[1]:
+        if item.PV_item + pokemon.PV  > pokemon.stats_originales[1]:  
           pokemon.PV = pokemon.stats_originales[1]
         else:
           pokemon.PV += 50
@@ -472,7 +472,7 @@ class lancement():
 
         while True:
           if not Dic_items_tenus:
-            print("Tous les objets ont été attribués !")
+            print("Tous les objets ont été attribués !")  
             return
         
           # --- ÉQUIPE 1 --- #
